@@ -13,9 +13,11 @@ import {
   History
 } from 'lucide-react';
 import { resolveMediaUrl } from '../services/api';
+import { usePlayer } from '../context/PlayerContext';
 
 const Sidebar = () => {
   const { user, isArtist, logout } = useAuth();
+  const { currentSong } = usePlayer();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -50,7 +52,8 @@ const Sidebar = () => {
         borderRight: '1px solid var(--border-subtle)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '24px 16px',
+        padding: currentSong ? '24px 16px 106px 16px' : '24px 16px',
+        transition: 'padding-bottom 0.2s ease',
         zIndex: 100,
       }}
     >

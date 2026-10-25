@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   User as UserIcon, 
@@ -11,7 +12,8 @@ import {
   Globe, 
   BadgeCheck,
   Music,
-  Camera
+  Camera,
+  LogOut
 } from 'lucide-react';
 import { InstagramIcon, TwitterIcon, YoutubeIcon } from '../components/SocialIcons';
 import { resolveMediaUrl } from '../services/api';
@@ -31,7 +33,13 @@ const GENRE_LIST = [
 ];
 
 const Profile = () => {
-  const { user, isArtist, updateProfile } = useAuth();
+  const { user, isArtist, updateProfile, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
@@ -185,6 +193,40 @@ const Profile = () => {
                 Joined {formatDate(user?.createdAt)}
               </span>
             </div>
+          </div>
+
+          {/* Quick Header Log Out */}
+          <div>
+            <button
+              onClick={handleLogout}
+              type="button"
+              title="Log out of SunteRaho"
+              style={{
+                borderRadius: '0px',
+                border: '1px solid rgba(255, 75, 75, 0.45)',
+                color: 'var(--error-text)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.86rem',
+                padding: '9px 18px',
+                fontWeight: 700,
+                backgroundColor: 'rgba(255, 75, 75, 0.08)',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--error-bg)';
+                e.currentTarget.style.borderColor = 'var(--error-text)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 75, 75, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(255, 75, 75, 0.45)';
+              }}
+            >
+              <LogOut size={16} />
+              <span>Log Out</span>
+            </button>
           </div>
         </div>
       </div>
@@ -389,6 +431,60 @@ const Profile = () => {
           </button>
         </div>
       </form>
+
+      {/* Account Session & Sign Out Card */}
+      <div className="glass-card" style={{
+        padding: '24px 28px',
+        marginTop: '28px',
+        border: '1px solid rgba(255, 75, 75, 0.25)',
+        borderRadius: '0px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        backgroundColor: 'rgba(255, 75, 75, 0.04)',
+      }}>
+        <div>
+          <h3 style={{ fontSize: '1.02rem', fontWeight: 800, color: '#fff', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <LogOut size={16} color="var(--error-text)" />
+            <span>Account Session</span>
+          </h3>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+            Signed in as <strong style={{ color: '#fff' }}>@{user?.username}</strong> ({user?.email}).
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          style={{
+            borderRadius: '0px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 22px',
+            fontSize: '0.88rem',
+            fontWeight: 700,
+            backgroundColor: 'var(--error-bg)',
+            border: '1px solid var(--error-border)',
+            color: 'var(--error-text)',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--error-text)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 75, 75, 0.25)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--error-border)';
+            e.currentTarget.style.backgroundColor = 'var(--error-bg)';
+          }}
+        >
+          <LogOut size={16} />
+          <span>Sign Out of SunteRaho</span>
+        </button>
+      </div>
     </div>
   );
 };
