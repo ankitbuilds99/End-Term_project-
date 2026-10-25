@@ -59,10 +59,7 @@ const Home = () => {
   }, [user]);
 
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    return 'Welcome';
   };
 
   return (
@@ -107,7 +104,7 @@ const Home = () => {
           </div>
 
           <h1 style={{ fontSize: '3rem', fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: '16px' }}>
-            {user ? `${getGreeting()}, ${user.name.split(' ')[0]}` : 'Music That Moves Your Soul'}
+            {user ? `Welcome, ${user.name.split(' ')[0]}` : 'Welcome to SunteRaho'}
           </h1>
 
           <p style={{ fontSize: '1.02rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '28px' }}>
