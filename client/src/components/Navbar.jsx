@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { resolveMediaUrl } from '../services/api';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -134,7 +135,7 @@ const Navbar = () => {
               overflow: 'hidden',
             }}>
               {user.avatar ? (
-                <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
+                <img src={resolveMediaUrl(user.avatar)} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
               ) : (
                 user.name.charAt(0).toUpperCase()
               )}

@@ -5,7 +5,8 @@ import {
   checkHealth, 
   getSongsApi, 
   getArtistsApi,
-  getPersonalizedDiscoveryApi
+  getPersonalizedDiscoveryApi,
+  resolveMediaUrl
 } from '../services/api';
 import SongCard from '../components/SongCard';
 import { 
@@ -346,7 +347,7 @@ const Home = () => {
                   overflow: 'hidden'
                 }}>
                   {artist.avatar ? (
-                    <img src={artist.avatar} alt={artist.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
+                    <img src={resolveMediaUrl(artist.avatar)} alt={artist.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
                   ) : (
                     (artist.artistProfile?.stageName || artist.name).charAt(0).toUpperCase()
                   )}

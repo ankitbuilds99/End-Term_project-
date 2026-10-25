@@ -14,6 +14,7 @@ import {
   Camera
 } from 'lucide-react';
 import { InstagramIcon, TwitterIcon, YoutubeIcon } from '../components/SocialIcons';
+import { resolveMediaUrl } from '../services/api';
 
 
 const GENRE_LIST = [
@@ -145,7 +146,7 @@ const Profile = () => {
               color: isArtist ? '#ff6b81' : 'var(--accent-primary)',
             }}>
               {avatar ? (
-                <img src={avatar} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
+                <img src={resolveMediaUrl(avatar)} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
               ) : (
                 name.charAt(0).toUpperCase()
               )}

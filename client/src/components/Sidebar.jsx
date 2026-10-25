@@ -12,6 +12,7 @@ import {
   ListMusic,
   History
 } from 'lucide-react';
+import { resolveMediaUrl } from '../services/api';
 
 const Sidebar = () => {
   const { user, isArtist, logout } = useAuth();
@@ -219,7 +220,7 @@ const Sidebar = () => {
                 flexShrink: 0
               }}>
                 {user.avatar ? (
-                  <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
+                  <img src={resolveMediaUrl(user.avatar)} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
                 ) : (
                   user.name.charAt(0).toUpperCase()
                 )}

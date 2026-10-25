@@ -16,25 +16,150 @@ const seedDemoData = async () => {
   try {
     console.log('[Seed] Connecting to MongoDB Atlas...');
     await mongoose.connect(uri);
-    console.log('[Seed] Connected.');
+    console.log('[Seed] Connected successfully.');
 
     const demoUsers = [
+      {
+        name: 'Imagine Dragons',
+        username: 'imaginedragons',
+        email: 'imaginedragons@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/imagine_dragons.jpg',
+        bio: 'Grammy Award-winning American pop rock band from Las Vegas, Nevada, known for world-famous stadium anthems like Believer and Radioactive.',
+        artistProfile: {
+          stageName: 'Imagine Dragons',
+          genres: ['Alternative Rock', 'Pop Rock', 'Indie Rock'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/imaginedragons',
+            twitter: 'https://twitter.com/imaginedragons',
+            youtube: 'https://youtube.com/@imaginedragons',
+          },
+        },
+      },
+      {
+        name: 'Billie Eilish',
+        username: 'billieeilish',
+        email: 'billie@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/billie_eilish.jpg',
+        bio: 'Grammy and Academy Award-winning American singer and songwriter known for dark pop, whisper vocals, and global chart-toppers like bad guy.',
+        artistProfile: {
+          stageName: 'Billie Eilish',
+          genres: ['Dark Pop', 'Alternative Pop', 'Electropop'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/billieeilish',
+            youtube: 'https://youtube.com/@BillieEilish',
+          },
+        },
+      },
+      {
+        name: 'Djo (Joe Keery)',
+        username: 'djo_music',
+        email: 'djo@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/djo.jpg',
+        bio: 'Actor and musician Joe Keery crafting hypnotic psychedelic pop, retro synth-wave, and the viral anthem End of Beginning.',
+        artistProfile: {
+          stageName: 'Djo',
+          genres: ['Synth-pop', 'Psychedelic Pop', 'Indie Rock'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/djotime',
+            youtube: 'https://youtube.com/@djo',
+          },
+        },
+      },
+      {
+        name: 'Alex Warren',
+        username: 'alexwarren',
+        email: 'alex@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/alex_warren.jpg',
+        bio: 'American singer-songwriter celebrated for emotional acoustic ballads, heartfelt lyrics, and viral hits like Ordinary.',
+        artistProfile: {
+          stageName: 'Alex Warren',
+          genres: ['Pop', 'Acoustic', 'Folk Pop'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/alexwarren',
+            youtube: 'https://youtube.com/@AlexWarren',
+          },
+        },
+      },
       {
         name: 'Arijit Singh',
         username: 'arijitsingh',
         email: 'arijit@sunteraho.com',
         password: 'password123',
         role: 'artist',
-        avatar: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=500&q=80',
-        bio: 'Playback singer and composer creating soulful melodies, acoustic memories, and romantic tracks.',
+        avatar: '/uploads/artists/arijit_singh.jpg',
+        bio: 'The voice of modern Indian cinema, globally celebrated for soulful romantic melodies, acoustic ballads, and timeless vocals.',
         artistProfile: {
           stageName: 'Arijit Singh',
           genres: ['Bollywood', 'Sufi', 'Acoustic'],
           isVerified: true,
           socialLinks: {
             instagram: 'https://instagram.com/arijitsingh',
-            twitter: 'https://twitter.com/arijitsingh',
             youtube: 'https://youtube.com/@arijitsinghofficial',
+          },
+        },
+      },
+      {
+        name: 'Shreya Ghoshal',
+        username: 'shreyaghoshal',
+        email: 'shreya@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/shreya_ghoshal.jpg',
+        bio: 'Five-time National Film Award winner and one of Indian music history’s most versatile, legendary playback vocalists.',
+        artistProfile: {
+          stageName: 'Shreya Ghoshal',
+          genres: ['Bollywood', 'Classical', 'Pop'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/shreyaghoshal',
+            youtube: 'https://youtube.com/@shreyaghoshal',
+          },
+        },
+      },
+      {
+        name: 'Atif Aslam',
+        username: 'atifaslam',
+        email: 'atif@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/atif_aslam.jpg',
+        bio: 'Iconic South Asian rock & playback vocalist renowned for raw emotional belts, timeless romance, and sufi rock anthems.',
+        artistProfile: {
+          stageName: 'Atif Aslam',
+          genres: ['Bollywood', 'Sufi Rock', 'Pop'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/atifaslam',
+            youtube: 'https://youtube.com/@AtifAslamOfficial',
+          },
+        },
+      },
+      {
+        name: 'KK (Krishnakumar Kunnath)',
+        username: 'kk_music',
+        email: 'kk@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: '/uploads/artists/kk.jpg',
+        bio: 'Legendary Indian playback singer whose timeless romantic and nostalgic anthems defined an entire generation.',
+        artistProfile: {
+          stageName: 'KK',
+          genres: ['Bollywood', 'Rock', 'Sufi'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/kk_singer',
           },
         },
       },
@@ -44,8 +169,8 @@ const seedDemoData = async () => {
         email: 'mohit@sunteraho.com',
         password: 'password123',
         role: 'artist',
-        avatar: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=500&q=80',
-        bio: 'Iconic Indian singer-songwriter celebrated for soulful melodies and Silk Route rock acoustic vibes.',
+        avatar: '/uploads/artists/mohit_chauhan.jpg',
+        bio: 'Soulful Indian singer-songwriter celebrated for Silk Route, rustic acoustic vocals, and unforgettable Bollywood classics.',
         artistProfile: {
           stageName: 'Mohit Chauhan',
           genres: ['Indie Pop', 'Folk & Acoustic', 'Bollywood'],
@@ -62,8 +187,8 @@ const seedDemoData = async () => {
         email: 'ritviz@sunteraho.com',
         password: 'password123',
         role: 'artist',
-        avatar: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=500&q=80',
-        bio: 'Electronic dance producer fusing classical Indian melodies with infectious electronic drops.',
+        avatar: '/uploads/artists/ritviz.jpg',
+        bio: 'Pioneering electronic dance music producer blending classical Indian melodies with infectious future bass drops.',
         artistProfile: {
           stageName: 'Ritviz',
           genres: ['Electronic / EDM', 'Indie Pop'],
@@ -71,23 +196,6 @@ const seedDemoData = async () => {
           socialLinks: {
             instagram: 'https://instagram.com/ritviz',
             youtube: 'https://youtube.com/@ritviz',
-          },
-        },
-      },
-      {
-        name: 'KK (Krishnakumar Kunnath)',
-        username: 'kk_music',
-        email: 'kk@sunteraho.com',
-        password: 'password123',
-        role: 'artist',
-        avatar: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=500&q=80',
-        bio: 'Legendary Indian playback singer known for timeless romantic anthems and unforgettable melodies.',
-        artistProfile: {
-          stageName: 'KK',
-          genres: ['Bollywood', 'Rock', 'Sufi'],
-          isVerified: true,
-          socialLinks: {
-            instagram: 'https://instagram.com/kk_singer',
           },
         },
       },
@@ -113,52 +221,99 @@ const seedDemoData = async () => {
         user = await User.create(userData);
         console.log(`[Seed] Created ${userData.role}: ${userData.name} (@${userData.username})`);
       } else {
-        console.log(`[Seed] User ${userData.username} already exists.`);
+        // Update avatar, bio, and artistProfile with authentic information
+        user.avatar = userData.avatar;
+        user.bio = userData.bio;
+        user.name = userData.name;
+        if (userData.artistProfile) {
+          user.artistProfile = userData.artistProfile;
+        }
+        await user.save();
+        console.log(`[Seed] Updated profile and avatar for ${userData.username}`);
       }
       userMap[userData.username] = user;
     }
 
-    // Clear previous generic mock tracks and seed real songs with real vocal tracks
-    await Song.deleteMany({
-      title: {
-        $in: [
-          'Tum Hi Ho (Original)',
-          'Chammak Challo',
-          'Abhi Kuch Dino Se',
-          'Abhi Abhi (Soul Ballad)',
-          'Tu Mohabbat Hai (Club Mix)',
-          'Shayad (Soulful Acoustic Reprise)',
-          'Tum Hi Ho (Midnight Piano Session)',
-          'Cold / Mess (Heartbreak Sunset)',
-          'Kasoor (Gentle Breeze)',
-          'Udd Gaye (Future Bass Drop)',
-          'Liggi (Festive Synth Beats)',
-          'Unreleased Studio Demo (Draft)',
-        ],
-      },
-    });
+    // Clear existing songs to replace with the clean catalogue of original tracks with genuine photo covers
+    await Song.deleteMany({});
+    console.log('[Seed] Cleared existing song catalogue.');
 
     const realSongs = [
+      {
+        title: 'Believer',
+        artist: userMap['imaginedragons']._id,
+        genre: 'Alternative Rock',
+        album: 'Evolve',
+        audioUrl: '/uploads/audio/believer.mp3',
+        artworkUrl: '/uploads/artwork/believer.jpg',
+        duration: 204,
+        playsCount: 421000,
+        isPublished: true,
+      },
+      {
+        title: 'End of Beginning',
+        artist: userMap['djo_music']._id,
+        genre: 'Synth-pop',
+        album: 'Decide',
+        audioUrl: '/uploads/audio/end_of_beginning.mp3',
+        artworkUrl: '/uploads/artwork/end_of_beginning.png',
+        duration: 159,
+        playsCount: 389000,
+        isPublished: true,
+      },
+      {
+        title: 'Ordinary',
+        artist: userMap['alexwarren']._id,
+        genre: 'Pop',
+        album: 'Ordinary - Single',
+        audioUrl: '/uploads/audio/ordinary.mp3',
+        artworkUrl: '/uploads/artwork/ordinary.png',
+        duration: 187,
+        playsCount: 275000,
+        isPublished: true,
+      },
+      {
+        title: 'bad guy',
+        artist: userMap['billieeilish']._id,
+        genre: 'Dark Pop',
+        album: 'WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?',
+        audioUrl: '/uploads/audio/bad_guy.mp3',
+        artworkUrl: '/uploads/artwork/bad_guy.png',
+        duration: 194,
+        playsCount: 512000,
+        isPublished: true,
+      },
       {
         title: 'Tum Hi Ho',
         artist: userMap['arijitsingh']._id,
         genre: 'Bollywood',
         album: 'Aashiqui 2',
         audioUrl: '/uploads/audio/tum_hi_ho.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=600&q=80',
+        artworkUrl: '/uploads/artwork/aashiqui_2.jpeg',
         duration: 264,
-        playsCount: 28450,
+        playsCount: 345000,
         isPublished: true,
       },
       {
-        title: 'Chammak Challo',
-        artist: userMap['ritviz']._id,
-        genre: 'Electronic / EDM',
-        album: 'Ra.One Soundtrack',
-        audioUrl: '/uploads/audio/chammak_challo.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80',
-        duration: 226,
-        playsCount: 34120,
+        title: 'Chikni Chameli',
+        artist: userMap['shreyaghoshal']._id,
+        genre: 'Bollywood',
+        album: 'Agneepath',
+        audioUrl: '/uploads/audio/chikni_chameli.mp3',
+        artworkUrl: '/uploads/artwork/agneepath.jpg',
+        duration: 303,
+        playsCount: 298000,
+        isPublished: true,
+      },
+      {
+        title: 'Tu Jaane Na',
+        artist: userMap['atifaslam']._id,
+        genre: 'Bollywood',
+        album: 'Ajab Prem Ki Ghazab Kahani',
+        audioUrl: '/uploads/audio/tu_jaane_na.mp3',
+        artworkUrl: '/uploads/artwork/ajab_prem.jpg',
+        duration: 341,
+        playsCount: 312000,
         isPublished: true,
       },
       {
@@ -167,9 +322,9 @@ const seedDemoData = async () => {
         genre: 'Indie Pop',
         album: 'Dil Toh Baccha Hai Ji',
         audioUrl: '/uploads/audio/abhi_kuch_dino_se.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+        artworkUrl: '/uploads/artwork/dil_toh_baccha.jpg',
         duration: 285,
-        playsCount: 19800,
+        playsCount: 198000,
         isPublished: true,
       },
       {
@@ -178,41 +333,63 @@ const seedDemoData = async () => {
         genre: 'Bollywood',
         album: 'Jism 2',
         audioUrl: '/uploads/audio/abhi_abhi.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80',
+        artworkUrl: '/uploads/artwork/jism_2.jpg',
         duration: 345,
-        playsCount: 22100,
+        playsCount: 221000,
         isPublished: true,
       },
       {
-        title: 'Tu Mohabbat Hai (Club Mix)',
+        title: 'Mat Aazma Re',
+        artist: userMap['kk_music']._id,
+        genre: 'Bollywood',
+        album: 'Murder 3',
+        audioUrl: '/uploads/audio/mat_aazma_re.mp3',
+        artworkUrl: '/uploads/artwork/murder_3.jpg',
+        duration: 271,
+        playsCount: 185000,
+        isPublished: true,
+      },
+      {
+        title: 'Tu Mohabbat Hai',
+        artist: userMap['atifaslam']._id,
+        genre: 'Bollywood',
+        album: 'Tere Naal Love Ho Gaya',
+        audioUrl: '/uploads/audio/tu_mohabbat_hai.mp3',
+        artworkUrl: '/uploads/artwork/tere_naal.jpg',
+        duration: 337,
+        playsCount: 176000,
+        isPublished: true,
+      },
+      {
+        title: 'Chammak Challo',
         artist: userMap['ritviz']._id,
         genre: 'Electronic / EDM',
-        album: 'Club Hits Edition',
-        audioUrl: '/uploads/audio/tu_mohabbat_hai.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
-        duration: 393,
-        playsCount: 15400,
+        album: 'Ra.One',
+        audioUrl: '/uploads/audio/chammak_challo.mp3',
+        artworkUrl: '/uploads/artwork/ra_one.jpg',
+        duration: 226,
+        playsCount: 341000,
         isPublished: true,
       },
       {
-        title: 'Arijit Singh Unreleased Demo (Private)',
+        title: 'Unreleased Acoustic Studio Demo',
         artist: userMap['arijitsingh']._id,
-        genre: 'Bollywood',
+        genre: 'Acoustic',
         album: 'Studio Drafts',
         audioUrl: '/uploads/audio/tum_hi_ho.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+        artworkUrl: '/uploads/artwork/aashiqui_2.jpeg',
         duration: 264,
         playsCount: 0,
-        isPublished: false, // Private draft to test draft visibility
+        isPublished: false, // Private draft to test artist draft isolation
       },
     ];
 
     for (const songData of realSongs) {
       await Song.create(songData);
-      console.log(`[Seed] Created Real Track: "${songData.title}" (${songData.genre})`);
+      console.log(`[Seed] Created Track: "${songData.title}" by ${songData.album} [${songData.artworkUrl}]`);
     }
 
-    console.log('[Seed] Seeding completed with REAL tracks successfully!');
+    console.log('[Seed] Seeding completed successfully with 10 Artists and 12 Original Songs!');
     await mongoose.disconnect();
     process.exit(0);
   } catch (err) {
