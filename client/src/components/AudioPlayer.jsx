@@ -71,6 +71,7 @@ const AudioPlayer = () => {
     <>
       {/* Persistent Bottom Bar */}
       <footer
+        className="app-audio-player"
         style={{
           position: 'fixed',
           bottom: 0,

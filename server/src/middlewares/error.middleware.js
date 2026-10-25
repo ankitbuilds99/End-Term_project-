@@ -25,6 +25,12 @@ export const errorHandler = (err, req, res, next) => {
     message = errors.join(', ');
   }
 
+  // Handle Mongoose CastError (invalid ObjectId format)
+  if (err.name === 'CastError') {
+    statusCode = 400;
+    message = `Invalid format for resource identifier: ${err.value}`;
+  }
+
   // Handle JWT errors
   if (err.name === 'JsonWebTokenError') {
     statusCode = 401;

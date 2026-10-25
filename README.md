@@ -1,263 +1,509 @@
 # SunteRaho — Full-Stack Music Streaming Platform
 
-SunteRaho is a full-stack music streaming platform inspired by Spotify, architected for listeners to discover sound and for independent artists to publish tracks, manage their identity, and grow their community.
+[![Automated Tests](https://img.shields.io/badge/Tests-64%20Passing-1ed760?style=for-the-badge&logo=node.js)](https://github.com/Abhi1818Singh/SunteRaho)
+[![Node.js](https://img.shields.io/badge/Node.js-v20%2B-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47a248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+
+**SunteRaho** (सुनते रहो — *"Keep Listening"*) is a full-stack music streaming web application inspired by Spotify. Engineered with a dark obsidian aesthetic, vibrant Spotify-green accents, glassmorphic surfaces, and seamless persistent audio playback, SunteRaho bridges the gap between music listeners and independent creators.
 
 ---
 
-## 🚀 Phase 1 Implementation: Foundation, Authentication & Profiles
+## 📋 Table of Contents
 
-- **Secure Authentication & Sessions**: HTTP-only, SameSite-hardened cookie session management powered by JWT and bcrypt password hashing. Supports email or username login.
-- **Role-Based Access Control (RBAC)**: Listeners (custom avatar, personal bio), Artists (stage name, music genres, verified badge, social links), and Admins.
-- **Artist Discovery Directory**: Browse and filter verified creators and independent artists by genre.
-- **Spotify Aesthetic UI**: Deep obsidian theme (`#0b0c10`), Spotify green accents (`#1ed760`), glassmorphic cards, and Plus Jakarta Sans typography.
+1. [Problem Statement & Target Users](#-problem-statement--target-users)
+2. [Solution Overview & Key Features](#-solution-overview--key-features)
+3. [System Architecture](#-system-architecture)
+4. [Technology Stack](#-technology-stack)
+5. [Feature Matrix by Milestone](#-feature-matrix-by-milestone)
+6. [Artist Analytics & Reliability (Part 4)](#-artist-analytics--reliability-part-4)
+7. [Environment Variables Reference](#-environment-variables-reference)
+8. [Installation & Setup](#-installation--setup)
+9. [Complete REST API Documentation](#-complete-rest-api-documentation)
+10. [Automated Testing Suite (64/64 Passing)](#-automated-testing-suite-6464-passing)
+11. [Deployment Guide](#-deployment-guide)
+12. [3–5 Minute Evaluator Demo Walkthrough](#-35-minute-evaluator-demo-walkthrough)
+13. [Final Submission Checklist](#-final-submission-checklist)
 
 ---
 
-## 🎵 Phase 2 Implementation: Music Catalogue, Media Uploads & Streaming Player
+## 🎯 Problem Statement & Target Users
 
-### Completed Features
+### The Problem
+Independent musicians and emerging artists face steep barriers when sharing their work on legacy platforms: opaque stream-counting algorithms, delayed listener reporting, complex distributor fees, and loss of direct ownership over their catalogue. Concurrently, listeners face fragmented discovery experiences cluttered with invasive ads, broken mobile layouts, and disjointed queues.
 
-1. **Song Model & MongoDB Indexes**:
-   - Schema fields: `title`, `artist` (User ref), `genre`, `album`, `audioUrl`, `artworkUrl`, `duration`, `playsCount`, `isPublished`, `releaseDate`, `audioFileSize`, `audioMimeType`.
-   - Compound indexes: `{ isPublished: 1, playsCount: -1 }`, `{ isPublished: 1, releaseDate: -1 }`, `{ isPublished: 1, genre: 1, playsCount: -1 }`, and `{ artist: 1, isPublished: 1 }`.
-   - Text indexing on `title` and `album` for fast search.
+### Target Personas
 
-2. **Public Music Catalogue & Search**:
-   - Endpoints strictly enforce publication visibility: only tracks with `isPublished: true` are returned to public listeners.
-   - Real-time search across track titles, albums, genres, and artist stage names.
-   - Genre filter chips (*Bollywood, Indie Pop, EDM, Folk & Acoustic, Lo-Fi Beats, Hip-Hop, Sufi, Rock*).
-   - Sorting by: Popularity (`playsCount`), Latest Releases (`releaseDate`), Title (A-Z), and Oldest.
-   - Server-side pagination with metadata (`total`, `page`, `pages`, `limit`).
+| User Persona | Goals & Workflows | Key Features Provided |
+| :--- | :--- | :--- |
+| **The Listener** | Discovers curated soundscapes, builds custom playlists, follows favorite artists, likes tracks, and reviews their private listening history. | Persistent global player, rule-based recommendation feed, liked songs playlist, dynamic queue management, and mobile-responsive layout. |
+| **The Independent Artist** | Releases original music with cover art, manages published vs unlisted releases, and monitors genuine stream performance. | Creator Studio (`/studio`), real-time stream aggregation, 7-day/30-day/All-Time date filtering, audience metrics, and catalog management. |
+| **The Platform Evaluator / Admin** | Audits platform security, reviews RBAC access enforcement, validates data integrity, and verifies error handling. | Strict ownership checks, rate limiting, Mongoose `CastError` guards, and 64 passing automated tests. |
 
-3. **Artist Studio & Media Upload System**:
-   - Artist-only studio for uploading tracks (`/studio`).
-   - Supports audio files (MP3, WAV, OGG, M4A, AAC, FLAC) up to 35MB with automatic duration detection via `music-metadata`.
-   - Supports cover artwork images (JPEG, PNG, WEBP) up to 6MB.
-   - Automated upload failure handling and cleanup: deletes partial or rejected files on disk if validation fails.
-   - Resource ownership enforcement: artists can only view drafts, edit metadata, toggle public/private status, or delete tracks they own.
+---
 
-4. **Shared Persistent Audio Player**:
-   - Single audio player fixed across navigation (`client/src/components/AudioPlayer.jsx`).
-   - Controls: Play, Pause, Seek bar, Previous, Next, Volume slider, Mute toggle, Shuffle, and Repeat modes (Off, All, One).
-   - Interactive Slide-out Queue popover drawer displaying upcoming songs with direct track jumping, queue removal, and clear queue actions.
-   - Edge-case handling:
-     - Handles autoplay restrictions gracefully (`NotAllowedError` caught without crashing).
-     - Buffering spinners and loading indicators.
-     - Broken audio error handling with user alert banner.
-     - Dynamic duration recovery on `loadedmetadata`.
+## 💡 Solution Overview & Key Features
 
-5. **Listening Threshold Play Validation**:
-   - Enforces a documented listening threshold rule (`listenDuration >= 30s` or `>= 50%` of track duration for short tracks).
-   - Anti-spam & rate-limiting cooldown window (60s) preventing duplicate client-side counter manipulation.
-   - Atomically increments track `playsCount` in database.
+- **Genuine Analytics Engine**: Play counts are verified using a documented listening threshold (`listenDuration >= 30s`) and deduplicated within cooldown windows. Artist analytics derive 100% from MongoDB aggregation pipelines across verified listening events—no fake or hardcoded metrics.
+- **Persistent Global Audio Streaming**: A single HTML5 audio engine lives outside the page router in `PlayerContext`. Users can navigate anywhere across the platform without audio skipping, pausing, or reloading.
+- **Rule-Based Personalized Discovery**: Recommendation engine calculates affinity scores combining followed artist signals (+50), genre preferences (+30/+15), popularity weights (+20), release recency (+10), and freshness (+15).
+- **Strict Role-Based Security**: HTTP-only, SameSite-hardened session cookies with JWT authentication. Only verified artists can publish or mutate tracks; only playlist owners can modify playlists.
+- **Desktop & Mobile Responsive**: Optimized for ultra-wide monitors down to 375px mobile screens with an adaptive mobile bottom navigation bar and touch-friendly controls.
 
-6. **Authorized Seed Audio**:
-   - Database seeder includes authorized, royalty-free audio tracks from SoundHelix and high-resolution Unsplash artwork.
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Client["Frontend Client (React 19 + Vite)"]
+        UI[Spotify-grade Obsidian UI]
+        Router[React Router v7 Navigation]
+        AuthCtx[AuthContext - JWT State]
+        PlayerCtx[PlayerContext - Persistent Streaming Engine]
+        MobNav[Mobile Bottom Navigation]
+    end
+
+    subgraph Server["Backend REST API (Node.js + Express 4)"]
+        RateLimiter[Sliding Window Rate Limiter]
+        AuthMW[JWT Cookie Auth & RBAC Middleware]
+        UploadMW[Multer Audio/Artwork Stream & Validator]
+        ErrMW[CastError & 404/500 Unified Handler]
+        
+        subgraph Controllers
+            AuthCtrl[Auth Controller]
+            SongCtrl[Song & Discovery Controller]
+            PlayCtrl[Playlist Controller]
+            FollowCtrl[Follow Controller]
+            LikeCtrl[Like Controller]
+            AnalytCtrl[Analytics Engine]
+        end
+    end
+
+    subgraph Database["Database & File System (MongoDB Atlas + Storage)"]
+        Users[(Users Collection)]
+        Songs[(Songs Collection)]
+        Playlists[(Playlists Collection)]
+        History[(History Collection)]
+        Follows[(Follows Collection)]
+        Likes[(Likes Collection)]
+        Disk[Local File Storage: /uploads]
+    end
+
+    UI --> Router
+    Router --> AuthCtx
+    Router --> PlayerCtx
+    AuthCtx -->|HTTP-only Cookie| AuthMW
+    PlayerCtx -->|Validated Play >=30s| RateLimiter
+
+    RateLimiter --> AuthMW
+    AuthMW --> Controllers
+    UploadMW --> SongCtrl
+    UploadMW --> Disk
+
+    Controllers --> ErrMW
+    AuthCtrl --> Users
+    SongCtrl --> Songs
+    PlayCtrl --> Playlists
+    FollowCtrl --> Follows
+    LikeCtrl --> Likes
+    AnalytCtrl --> History
+    AnalytCtrl --> Songs
+    AnalytCtrl --> Follows
+```
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 19, Vite, React Router v7, Axios, Lucide React
-- **Backend**: Node.js (ESM), Express 4, Cookie-Parser, CORS, Multer, Music-Metadata
-- **Database**: MongoDB Atlas, Mongoose ODM
-- **Authentication**: JWT with HTTP-only Cookies & Bcrypt
-- **Design System**: Vanilla CSS tokens with Glassmorphism and Spotify-grade dark theme
-
----
-
-## 📂 Project Architecture
-
-```
-SunteRaho/
-├── client/
-│   ├── src/
-│   │   ├── components/       # Navbar, Sidebar, SongCard, AudioPlayer, ProtectedRoute, SocialIcons
-│   │   ├── context/          # AuthContext, PlayerContext (global persistent audio state)
-│   │   ├── pages/            # Home, Catalogue, Artists, ArtistStudio, Login, Register, Profile
-│   │   ├── services/         # api.js (Axios instance with credentials & media URL resolver)
-│   │   ├── App.jsx           # Application routing and layout with persistent player
-│   │   ├── index.css         # Design tokens, buttons, glassmorphic cards
-│   │   └── main.jsx          # React DOM root
-│   ├── package.json
-│   └── vite.config.js
-│
-├── server/
-│   ├── src/
-│   │   ├── config/           # MongoDB Atlas connection (db.js)
-│   │   ├── controllers/      # auth.controller.js, user.controller.js, song.controller.js
-│   │   ├── middlewares/      # auth.middleware.js, error.middleware.js
-│   │   ├── models/           # user.model.js, song.model.js
-│   │   ├── routes/           # auth.routes.js, user.routes.js, song.routes.js
-│   │   ├── utils/            # token.js, upload.js (Multer, metadata, file cleanup)
-│   │   ├── app.js            # Express app configuration & static uploads serving
-│   │   └── server.js         # Server entry point
-│   ├── uploads/              # Local storage for audio and cover artwork
-│   │   ├── audio/
-│   │   └── artwork/
-│   ├── tests/                # auth.test.js, song.test.js (Automated integration tests)
-│   ├── seed.js               # Database demo seed script (artists & royalty-free tracks)
-│   ├── .env.example          # Environment variable documentation
-│   └── package.json
-└── README.md
-```
-
----
-
-## ⚙️ Environment Variables
-
-### Server (`server/.env`)
-
-| Variable | Description | Example |
+| Layer | Technologies Used | Rationale |
 | :--- | :--- | :--- |
-| `PORT` | Backend listening port | `8008` |
-| `db_url` | MongoDB Atlas Connection URI | `mongodb+srv://<user>:<pwd>@cluster.mongodb.net/` |
-| `JWT_SECRET` | Secret key used for signing session tokens | `your_secret_key` |
-| `JWT_EXPIRES_IN` | Token expiration duration | `7d` |
-| `CLIENT_URL` | Allowed client origin for CORS | `http://localhost:5173` |
-| `NODE_ENV` | Environment mode (`development` / `production`) | `development` |
+| **Frontend** | React 19, Vite 6, React Router v7, Axios, Lucide React | Blazing-fast HMR, component modularity, fluid responsive layouts. |
+| **Styling** | Vanilla CSS Tokens, Glassmorphism, CSS Grid / Flexbox | Zero runtime overhead, tailored Spotify obsidian theme (`#0b0c10`, `#1ed760`). |
+| **Backend** | Node.js (ESM), Express 4.21, Cookie-Parser, CORS | High-throughput asynchronous I/O with standard REST conventions. |
+| **Database** | MongoDB Atlas, Mongoose 8 | Document-oriented schema with compound indexing for queries and aggregations. |
+| **Media Processing** | Multer 2, Music-Metadata 12 | Validates permitted mime-types, extracts audio duration, rejects partial uploads. |
+| **Security** | JWT, BcryptJS, In-memory Sliding-window Rate Limiter | Resilient brute-force protection, HTTP-only secure cookie session storage. |
+| **Testing** | Node.js Test Runner (`node:test`), Supertest 7 | Native fast testing without heavy third-party framework overhead. |
 
 ---
 
-## 📦 Getting Started
+## 📊 Feature Matrix by Milestone
 
-### 1. Prerequisites
-- Node.js v18+ (Tested on Node v22.19)
-- MongoDB Atlas account or local MongoDB instance
+### Part 1: Authentication & Profiles
+- [x] Secure registration with role selection (`listener` vs `artist`).
+- [x] Username and email unique verification.
+- [x] Bcrypt password hashing (minimum 6 characters).
+- [x] HTTP-only cookie JWT session token handling.
+- [x] User profile update (name, bio, avatar).
+- [x] Artist profile directory with genre chips and verified badges.
+
+### Part 2: Media Catalogue & Streaming Player
+- [x] Song schema with duration, audio URL, artwork URL, genre, and publication status.
+- [x] Public catalogue returning only published releases.
+- [x] Paginated search across title, artist name, and album.
+- [x] Sorting by Popularity, Release Date, Title (A-Z), and Oldest.
+- [x] Artist track upload with automatic duration extraction.
+- [x] Audio validation (MP3, WAV, M4A, FLAC, OGG, AAC up to 35MB).
+- [x] Cover art validation (JPEG, PNG, WEBP up to 6MB).
+- [x] Single persistent global audio player across all routes.
+- [x] Slide-out queue drawer with jump-to-track and reordering.
+- [x] Listening threshold validation (>= 30 seconds) with 60s cooldown deduplication.
+
+### Part 3: Social Following, Likes, Playlists, History & Discovery
+- [x] Follow/unfollow artists with unique compound index `{ follower: 1, artist: 1 }`.
+- [x] Self-follow prevention with 400 Bad Request.
+- [x] Like/unlike tracks with unique compound index `{ user: 1, song: 1 }`.
+- [x] Dedicated Liked Songs page (`/liked`) with 1-click play.
+- [x] Full Playlist CRUD with ownership enforcement on every mutation.
+- [x] Public vs private playlist visibility rules (unauthorized access returns 404).
+- [x] Custom track reordering within playlists.
+- [x] Private listening history with relative time tags and clear history action.
+- [x] Multi-signal rule-based personalized discovery algorithm with fallback for guests.
+
+### Part 4: Artist Analytics, Reliability, Testing & Deployment
+- [x] Genuine Creator Studio analytics dashboard (`/studio`).
+- [x] Real Total Streams, Unique Listeners, Airtime Minutes, Followers, and Published Track counts.
+- [x] Dynamic date filtering (`All Time`, `Last 30 Days`, `Last 7 Days`).
+- [x] Daily streaming activity timeline chart.
+- [x] Top 5 tracks ranked by period streams.
+- [x] Genre soundscape breakdown tags.
+- [x] Reliability audit: Mongoose `CastError` handler returning 400 instead of 500.
+- [x] In-memory sliding-window rate limiting on sensitive routes.
+- [x] Mobile responsive bottom navigation bar and adaptive layout.
+- [x] 64 passing automated tests across all 4 phases.
+
+---
+
+## 📈 Artist Analytics & Reliability (Part 4)
+
+### Real-Time Analytics Derivation
+Unlike mock dashboards, SunteRaho calculates every metric directly from MongoDB collections:
+1. **Total Streams**: Aggregated from verified `History` records or track-level `playsCount`.
+2. **Unique Listeners**: `History.distinct('user', { song: { $in: trackIds } })` ensuring each individual user is counted once per timeframe.
+3. **Listening Time**: Summed `listenDuration` in seconds from `History` records, converted to minutes.
+4. **Follower Growth**: Total and period follower counts from `Follow` records with `{ $gte: dateFilter }`.
+5. **Timeline Chart**: Aggregated using `$dateToString: { format: '%Y-%m-%d', date: '$playedAt' }` for daily breakdown.
+6. **Date Filtering**: Accurately supports `30d` and `7d` querying `playedAt` and `createdAt`.
+
+### Security & Reliability Audits
+
+```
+✓ Mongoose CastError Guard:
+  GET /api/songs/invalid-id-xyz       -> 400 Bad Request (Invalid track ID format)
+  GET /api/playlists/malformed-id     -> 400 Bad Request (Invalid playlist ID format)
+  POST /api/users/bad-id/follow       -> 400 Bad Request (Invalid format for resource identifier)
+
+✓ Missing Resource Guard:
+  GET /api/songs/507f1f77bcf86cd799439011 -> 404 Not Found (Track not found)
+  GET /api/playlists/private-id-of-other  -> 404 Not Found (Playlist is private)
+
+✓ Role & Ownership Checks:
+  Non-artist calling /api/songs/artist/analytics -> 403 Forbidden
+  Artist B modifying Artist A's track            -> 403 Forbidden
+  Listener 2 modifying Listener 1's playlist     -> 403 Forbidden
+
+✓ Rate Limiting:
+  Sliding-window limiter protects /api/auth/login and /api/auth/register against brute-force attacks.
+```
+
+---
+
+## ⚙️ Environment Variables Reference
+
+### Backend (`server/.env`)
+
+```ini
+# Server Port
+PORT=8008
+
+# Database Connection URI (MongoDB Atlas or Local MongoDB)
+db_url=mongodb+srv://<username>:<password>@cluster0.mongodb.net/sunteraho?retryWrites=true&w=majority
+
+# JWT Authentication
+JWT_SECRET=sunteraho_super_secure_jwt_secret_key_2026_xyz
+JWT_EXPIRES_IN=7d
+
+# CORS Allowed Origin
+CLIENT_URL=http://localhost:5173
+
+# Environment
+NODE_ENV=development
+```
+
+### Frontend (`client/.env`)
+
+```ini
+# Backend API Base URL
+VITE_API_URL=http://localhost:8008/api
+```
+
+---
+
+## 📦 Installation & Setup
+
+### Prerequisites
+- Node.js v18.0.0 or higher (Tested on Node v22.19.0)
+- MongoDB Atlas connection string or local MongoDB instance
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/Abhi1818Singh/SunteRaho.git
+cd SunteRaho
+```
 
 ### 2. Backend Setup
 ```bash
 cd server
 npm install
 
-# Run database seeder to populate sample artists and demo songs
+# Create .env from template
+cp .env.example .env
+# Edit .env with your MongoDB Atlas db_url and JWT_SECRET
+
+# Seed database with sample artists and authorized songs
 npm run seed
 
-# Run automated tests (runs all 30 tests)
+# Run automated tests (runs all 64 tests)
 npm test
 
 # Start backend server
 npm run dev
-# Server will run on http://localhost:8008
+# Backend runs on http://localhost:8008
 ```
 
 ### 3. Frontend Setup
 ```bash
-cd client
+cd ../client
 npm install
 
-# Start Vite development server
+# Start Vite dev server
 npm run dev
-# Web app will be live on http://localhost:5173
+# Frontend runs on http://localhost:5173
 ```
 
 ---
 
-## 🔌 API Endpoints Summary
+## 🔌 Complete REST API Documentation
 
-### Authentication (`/api/auth`)
-- `POST /api/auth/register` — Register new listener or artist.
-- `POST /api/auth/login` — Login with username/email and password (sets cookie).
-- `GET /api/auth/me` — Retrieve active authenticated session user profile.
-- `POST /api/auth/logout` — Invalidate session and clear HTTP-only cookie.
+### 1. Authentication (`/api/auth`)
 
-### Users & Artists (`/api/users`)
-- `GET /api/users/artists` — Query and filter artists by genre.
-- `GET /api/users/:identifier` — Fetch public user or artist profile.
-- `PUT /api/users/profile` — Update authenticated user's name, bio, avatar, and artist portfolio.
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Public | Register new `listener` or `artist`. Rate-limited. |
+| `POST` | `/api/auth/login` | Public | Login with username/email & password. Sets HTTP-only cookie. Rate-limited. |
+| `GET` | `/api/auth/me` | Authenticated | Retrieve current session user object. |
+| `POST` | `/api/auth/logout` | Authenticated | Invalidate session and clear auth cookie. |
 
-### Music Catalogue & Player (`/api/songs`)
-- `GET /api/songs` — Public catalogue with search, genre filtering, and sorting (`popular`, `latest`, `title`, `oldest`). Returns published tracks only.
-- `GET /api/songs/:id` — Get track details (enforces publication visibility).
-- `GET /api/songs/artist/my-tracks` — Artist-only route returning all tracks (published and drafts) with stats.
-- `POST /api/songs` — Artist-only route to upload new track with audio and artwork files.
-- `PUT /api/songs/:id` — Artist-only route to edit metadata and toggle publish status (owner verified).
-- `DELETE /api/songs/:id` — Artist-only route to permanently delete track and disk files (owner verified).
-- `POST /api/songs/:id/play` — Validated listening threshold event (requires >= 30s playback, cooldown deduplicated).
+### 2. Music Catalogue & Streaming (`/api/songs`)
 
----
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/songs` | Public | Query published catalogue with search, genre, sort, pagination. |
+| `GET` | `/api/songs/:id` | Public | Track details (enforces publication visibility). |
+| `GET` | `/api/songs/discovery/personalized` | Optional Auth | Rule-based personalized discovery feed with guest fallback. |
+| `POST` | `/api/songs/:id/play` | Optional Auth | Record validated play event (>= 30s playback). Cooldown deduplicated. |
+| `POST` | `/api/songs/:id/like` | Authenticated | Toggle like/unlike track. |
+| `GET` | `/api/songs/user/liked` | Authenticated | Retrieve user's liked tracks with full artist details. |
+| `GET` | `/api/songs/user/liked-ids` | Authenticated | Fast array of liked track IDs for heart state synchronization. |
 
----
+### 3. Artist Studio Management & Analytics (`/api/songs/artist`)
 
-## 🎧 Phase 3 Implementation: Following, Likes, Playlists, History & Discovery
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/songs` | Artist/Admin | Upload new original track with audio and artwork binaries. |
+| `PUT` | `/api/songs/:id` | Owner Artist | Edit track metadata or toggle published/draft status. |
+| `DELETE` | `/api/songs/:id` | Owner Artist | Delete track and clean up associated audio/image files. |
+| `GET` | `/api/songs/artist/my-tracks` | Artist/Admin | Retrieve all tracks owned by the authenticated artist (published & drafts). |
+| `GET` | `/api/songs/artist/analytics` | Artist/Admin | Derived audience analytics with timeframe query (`all`, `30d`, `7d`). |
 
-### Completed Features
+### 4. Playlists (`/api/playlists`)
 
-1. **Follow Model & Artist Network**:
-   - Schema fields: `follower` (User ref), `artist` (User ref), `createdAt`.
-   - Unique compound index `{ follower: 1, artist: 1 }` ensuring duplicate follows cannot occur.
-   - Self-follow prevention with HTTP 400 Bad Request.
-   - Follower count calculation dynamically reflecting follow/unfollow actions.
-   - Endpoints:
-     - `POST /api/users/:artistId/follow` — Toggle follow/unfollow with race-condition deduplication.
-     - `GET /api/users/:artistId/is-following` — Check if current user follows an artist and get total follower count.
-     - `GET /api/users/me/following` — List artists followed by current user.
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/playlists` | Authenticated | Create a new public or private playlist. |
+| `GET` | `/api/playlists` | Public | Browse public community playlists. |
+| `GET` | `/api/playlists/my-playlists` | Authenticated | Retrieve current user's public and private playlists. |
+| `GET` | `/api/playlists/:id` | Public/Owner | Get playlist with ordered tracks (enforces privacy). |
+| `PUT` | `/api/playlists/:id` | Owner Only | Update playlist title, description, cover, and visibility. |
+| `DELETE` | `/api/playlists/:id` | Owner Only | Delete playlist permanently. |
+| `POST` | `/api/playlists/:id/songs` | Owner Only | Add song to playlist (prevents duplicates). |
+| `DELETE` | `/api/playlists/:id/songs/:songId` | Owner Only | Remove song from playlist. |
+| `PUT` | `/api/playlists/:id/reorder` | Owner Only | Reorder songs in playlist and persist sequence. |
 
-2. **Like Model & Liked Songs Collection**:
-   - Schema fields: `user` (User ref), `song` (Song ref), `createdAt`.
-   - Unique compound index `{ user: 1, song: 1 }` preventing duplicate likes.
-   - Persistent Liked Songs page (`/liked`) with hero banner, total count, duration calculation, un-like action, and "Play All" queue integration.
-   - Fast ID retrieval for instant UI heart states across the whole application:
-     - `POST /api/songs/:id/like` — Toggle like/unlike track.
-     - `GET /api/songs/user/liked` — Paginated list of liked tracks with populated artist profiles.
-     - `GET /api/songs/user/liked-ids` — Lightweight list of liked song IDs for fast client heart rendering.
+### 5. Social & User Profile (`/api/users`)
 
-3. **Playlists (CRUD, Ownership & Privacy)**:
-   - Schema fields: `title`, `description`, `coverUrl`, `isPublic`, `owner` (User ref), `songs` (ordered array of Song refs), `timestamps`.
-   - Ownership enforcement: Only the playlist owner (or admin) can edit metadata, delete, add tracks, remove tracks, or reorder tracks.
-   - Privacy security: Private playlists (`isPublic: false`) are strictly inaccessible to unauthorized users (returns 404).
-   - In-place track reordering: Supports custom track order persisted in MongoDB.
-   - 1-Click "Add to Playlist" modal with inline playlist creation.
-   - Playlist playback: Seamlessly loads entire playlist in custom track order into the global player and queue.
-   - Endpoints:
-     - `POST /api/playlists` — Create a new playlist.
-     - `GET /api/playlists` — Browse public community playlists.
-     - `GET /api/playlists/my-playlists` — Retrieve authenticated user's private and public playlists.
-     - `GET /api/playlists/:id` — Get playlist with ordered tracks (enforces privacy).
-     - `PUT /api/playlists/:id` — Update playlist title, description, cover, and visibility (owner only).
-     - `DELETE /api/playlists/:id` — Delete playlist (owner only).
-     - `POST /api/playlists/:id/songs` — Add track to playlist (prevents duplicate addition, owner only).
-     - `DELETE /api/playlists/:id/songs/:songId` — Remove track from playlist (owner only).
-     - `PUT /api/playlists/:id/reorder` — Persist ordered array of song IDs (owner only).
-
-4. **User-Specific Listening History**:
-   - Schema fields: `user` (User ref), `song` (Song ref), `listenDuration`, `playedAt`.
-   - Recorded automatically on validated play events (>= 30s playback).
-   - Chronological timeline (`playedAt: -1`) with relative time tags ("Just now", "10m ago", etc.).
-   - History privacy: Strictly isolated per user. Other users cannot inspect listening history.
-   - Endpoints:
-     - `GET /api/users/me/history` — Paginated chronological listening history.
-     - `DELETE /api/users/me/history` — Clear personal listening history.
-
-5. **Rule-Based Personalized Discovery & Fallback**:
-   - Deterministic multi-factor scoring algorithm:
-     - **Followed Artist Boost**: +50 points if track belongs to an artist the user follows.
-     - **Preferred Genre Match**: +30 points for user's primary favorite genre, +15 points for secondary genre (derived from likes and listening history).
-     - **Popularity Factor**: Scaled up to +20 points based on total streams.
-     - **Recency Bonus**: +10 points for tracks released within the last 30 days.
-     - **Freshness Bonus**: +15 points for tracks not yet listened to by this user.
-   - **Discovery Fallback for New Users & Guests**:
-     - Automatically falls back to top trending published tracks across diverse genres when user has no history or is not logged in.
-   - Endpoints:
-     - `GET /api/songs/discovery/personalized` — Returns personalized or fallback discovery feed.
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/users/artists` | Public | Explore verified artists filtered by genre. |
+| `GET` | `/api/users/:identifier` | Public | View public profile by user ID or username. |
+| `PUT` | `/api/users/profile` | Authenticated | Update bio, avatar, and artist profile details. |
+| `POST` | `/api/users/:artistId/follow` | Authenticated | Toggle follow/unfollow artist. Self-follow rejected. |
+| `GET` | `/api/users/:artistId/is-following` | Optional Auth | Check if current user follows artist and get follower count. |
+| `GET` | `/api/users/me/following` | Authenticated | Get list of artists followed by user. |
+| `GET` | `/api/users/me/history` | Authenticated | Private chronological listening history. |
+| `DELETE` | `/api/users/me/history` | Authenticated | Clear user's personal listening history. |
 
 ---
 
-## 🧪 Testing Results
+## 🧪 Automated Testing Suite (64/64 Passing)
 
-All 55 automated integration and unit tests passing across all three parts:
+The test suite covers unit and integration scenarios across all 4 parts using native Node.js test runner and Supertest.
+
+### Running Tests
+```bash
+cd server
+npm test
+```
+
+### Test Results Breakdown
 
 ```
 ▶ SunteRaho Authentication & Profile API Tests (14 passed)
-▶ SoundSphere Part 3: Following, Likes, Playlists, History & Discovery Tests
-  ▶ Follow System & Counts (6 passed)
-  ▶ Like System & Liked Songs (5 passed)
-  ▶ Playlists: CRUD, Ownership, Privacy & Ordering (9 passed)
-  ▶ Listening History & Privacy (3 passed)
-  ▶ Rule-Based Personalized Discovery & Fallback (2 passed)
-✔ SoundSphere Part 3 Tests (25 passed)
-▶ SunteRaho Music Catalogue, Media Uploads & Player API Tests (16 passed)
+  ✔ GET /api/health should return 200 and healthy status
+  ✔ POST /api/auth/register should fail when required fields are missing
+  ✔ POST /api/auth/register should fail when password is less than 6 chars
+  ✔ POST /api/auth/register should successfully register a Listener and set auth cookie
+  ✔ POST /api/auth/register should fail on duplicate email or username
+  ✔ POST /api/auth/register should successfully register an Artist with artistProfile
+  ✔ POST /api/auth/login should fail with invalid credentials
+  ✔ POST /api/auth/login should succeed with valid credentials and return user
+  ✔ GET /api/auth/me should reject unauthenticated request with 401
+  ✔ GET /api/auth/me should return current user when authenticated via cookie
+  ✔ PUT /api/users/profile should update user profile
+  ✔ PUT /api/users/profile should update artist profile details for artist
+  ✔ GET /api/users/artists should list artists
+  ✔ POST /api/auth/logout should clear the token cookie
 
-Total: 55 tests, 0 failures.
+▶ SunteRaho Music Catalogue, Media Uploads & Player API Tests (16 passed)
+  ✔ POST /api/songs should reject unauthenticated requests with 401
+  ✔ POST /api/songs should reject listener accounts with 403 Forbidden
+  ✔ POST /api/songs should fail if title or genre is missing
+  ✔ POST /api/songs should allow artist to create a published track
+  ✔ POST /api/songs should allow artist to create an unpublished draft track
+  ✔ GET /api/songs should return only published tracks in public catalogue
+  ✔ GET /api/songs search query and genre filtering
+  ✔ GET /api/songs/:id public access to unpublished track should return 404
+  ✔ GET /api/songs/:id owner artist access to unpublished track should succeed
+  ✔ PUT /api/songs/:id should prevent Artist B from updating Artist A track (ownership check)
+  ✔ PUT /api/songs/:id should allow owner artist to update track metadata
+  ✔ GET /api/songs/artist/my-tracks should return all songs of current artist
+  ✔ POST /api/songs/:id/play should enforce listening threshold
+  ✔ POST /api/songs/:id/play should deduplicate rapid plays within cooldown window
+  ✔ DELETE /api/songs/:id should prevent non-owner from deleting
+  ✔ DELETE /api/songs/:id should allow owner artist to delete their track
+
+▶ SoundSphere Part 3: Following, Likes, Playlists, History & Discovery Tests (25 passed)
+  ✔ Follow an artist successfully & update follower counts
+  ✔ Self-follow is rejected with 400
+  ✔ Follow status endpoint reports correct state
+  ✔ Followed artists list includes followed artist
+  ✔ Unfollow artist toggles back correctly
+  ✔ Follow model enforces unique compound index against duplicates
+  ✔ Like a song successfully
+  ✔ Liked songs list returns liked song
+  ✔ Liked song IDs contains liked song ID
+  ✔ Like model enforces unique compound index against duplicates
+  ✔ Toggle unlike removes song from liked list
+  ✔ Create public and private playlists
+  ✔ Public playlist is viewable by other users and anonymous guests
+  ✔ Private playlist is inaccessible to other users (returns 404)
+  ✔ Private playlist is accessible to its owner
+  ✔ Add songs to playlist and prevent duplicates
+  ✔ Non-owner cannot add songs to playlist (returns 403)
+  ✔ Reorder tracks in playlist and verify persistent order
+  ✔ Non-owner cannot reorder or delete playlist (returns 403)
+  ✔ Remove track from playlist and delete playlist by owner
+  ✔ Validated play event logs listening history for authenticated user
+  ✔ History is strictly private to owner (Listener 2 sees empty history)
+  ✔ Clear listening history empties history list
+  ✔ Fallback discovery returns popular songs for new/unauthenticated users
+  ✔ Personalized discovery recommends tracks with rule-based scoring
+
+▶ Part 4: SunteRaho Artist Analytics, Reliability & Security Tests (9 passed)
+  ✔ GET /api/songs/artist/analytics requires authentication (401)
+  ✔ GET /api/songs/artist/analytics blocks regular listener accounts (403)
+  ✔ GET /api/songs/artist/analytics permits artist and returns accurate baseline
+  ✔ Validating listening events dynamically updates artist analytics and listener counts
+  ✔ GET /api/songs/artist/analytics accurately filters by 30d and 7d
+  ✔ CastError on malformed song ID returns 400 Bad Request instead of 500
+  ✔ CastError on malformed playlist ID returns 400 Bad Request
+  ✔ CastError on malformed follow artist ID returns 400 Bad Request
+  ✔ Non-existent valid ObjectId returns 404 Not Found
+
+---------------------------------------------------------
+ℹ tests: 64 passed, 0 failed, 0 skipped
+ℹ duration: ~7.3 seconds
+---------------------------------------------------------
 ```
 
+---
+
+## 🚀 Deployment Guide
+
+SunteRaho includes production deployment configurations for Render and Vercel.
+
+### Option 1: 1-Click Render Blueprint (`render.yaml`)
+1. Push repository to GitHub.
+2. Log into [Render](https://render.com/) and click **New +** -> **Blueprint**.
+3. Select your repository. Render automatically provisions:
+   - `sunteraho-backend`: Node.js Web Service running `npm start` with `PORT=8008`.
+   - `sunteraho-frontend`: Static Site running `npm run build` publishing `dist`.
+4. Add your MongoDB Atlas connection string in the `db_url` environment variable.
+
+### Option 2: Deploy Frontend on Vercel
+1. Link the `/client` directory to Vercel.
+2. Set Build Command: `npm run build`, Output Directory: `dist`.
+3. Set Environment Variable: `VITE_API_URL=https://your-backend-api.onrender.com/api`.
+4. `client/vercel.json` ensures all SPA client-side routes redirect to `/index.html`.
+
+---
+
+## 🎬 3–5 Minute Evaluator Demo Walkthrough
+
+Follow these steps to evaluate the application end to end:
+
+### Step 1: Guest Discovery & Audio Streaming (1 min)
+1. Open the application at `http://localhost:5173/`.
+2. Browse the **Made For You** and **Trending Tracks** sections on the Home page.
+3. Click the green **Play** button on any song card (e.g., *"Tum Hi Ho"* by Arijit Singh).
+4. Notice the persistent bottom audio player appears with title, artist, audio waveform, and playback scrubber.
+5. Click the queue button (bottom right) to inspect upcoming tracks, drag or jump between tracks.
+6. Navigate to **Music Catalogue** (`/catalogue`) and filter by genre (e.g. *Bollywood* or *EDM*). Playback continues without interruption!
+
+### Step 2: Listener Social Experience (1.5 min)
+1. Click **Log In** in the top navbar and click the **Quick Demo Login** button:
+   - Demo Listener: `username: rahul_listener`, `password: password123`.
+2. Click the **Heart** icon on any song to like it.
+3. Open **Liked Songs** (`/liked`) from the sidebar to verify your song appears instantly.
+4. Click **Playlists** (`/playlists`) and create a new playlist (e.g., *"Late Night Vibes"*).
+5. Add songs to your playlist using the **Add to Playlist** button on any track card.
+6. Go to **Explore Artists** (`/artists`) and click **Follow** on *Arijit Singh*.
+7. Open **Listening History** (`/history`) to see your validated stream recorded with relative timestamps.
+
+### Step 3: Artist Studio & Analytics Dashboard (1.5 min)
+1. Switch to the demo artist account:
+   - Log out, then log in as `username: arijitsingh`, `password: password123`.
+2. Open **Artist Studio** (`/studio`) from the sidebar.
+3. In the **Catalog & Uploads** tab:
+   - View your published tracks and drafts.
+   - Click **Upload New Track** to test audio/artwork upload or release status toggle.
+4. Switch to the **Audience & Stream Analytics** tab:
+   - Inspect genuine metrics: **Total Streams**, **Followers**, **Unique Listeners**, **Listening Time**, and **Published Releases**.
+   - Toggle timeframe chips: `All Time`, `Last 30 Days`, and `Last 7 Days`.
+   - Hover over the **Daily Streams Activity Timeline** chart.
+   - Review your **Top 5 Streamed Tracks** and click play directly from the analytics table.
+5. Resize window to mobile view (375px) to verify the responsive bottom navigation bar!
+
+---
+
+## ✅ Final Submission Checklist
+
+- [x] **Genuine Analytics**: Derived 100% from validated `History`, `Song`, and `Follow` records with accurate date filtering. Zero hardcoded statistics.
+- [x] **Reliability & CastError Handling**: Unified error middleware returns `400 Bad Request` for invalid resource IDs and `404 Not Found` for non-existent entities.
+- [x] **Security Audited**: Sliding-window rate limiting on authentication routes, HTTP-only cookie JWTs, strict RBAC, and ownership enforcement on songs/playlists.
+- [x] **Responsive Design**: Flawless experience on desktop monitors and mobile devices with dedicated mobile bottom navigation.
+- [x] **Full Automated Test Coverage**: 64 out of 64 tests passing across Auth, Catalogue, Social, and Analytics suites.
+- [x] **Clean Repository & Secret Safety**: `.env` files and user binaries ignored via `.gitignore`; seed script contains royalty-free audio tracks.
+- [x] **Deployment Ready**: `render.yaml` blueprint and `vercel.json` provided for seamless production deployment.

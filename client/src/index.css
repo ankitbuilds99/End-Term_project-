@@ -108,17 +108,24 @@ input, textarea, select {
 }
 
 @media (max-width: 850px) {
-  .main-content-area {
-    margin-left: 0;
+  .app-sidebar {
+    display: none !important;
   }
-}
-
-.content-viewport {
-  flex: 1;
-  padding: 24px 32px 64px 32px;
-  max-width: 1360px;
-  width: 100%;
-  margin: 0 auto;
+  .main-content-area {
+    margin-left: 0 !important;
+    padding-bottom: 140px !important;
+  }
+  .content-viewport {
+    padding: 16px 16px 90px 16px !important;
+  }
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+  .app-audio-player {
+    bottom: 64px !important;
+    padding: 0 12px !important;
+    height: 72px !important;
+  }
 }
 
 /* Reusable Glass Card */

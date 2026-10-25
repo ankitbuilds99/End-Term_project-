@@ -361,6 +361,157 @@ export const getMyTracks = async (req, res, next) => {
 };
 
 /**
+ * Real-time Artist Analytics & Metrics Dashboard
+ * GET /api/songs/artist/analytics?timeframe=all|30d|7d
+ * 
+ * Accurately derives analytics from validated listening events (History),
+ * published song aggregates, and verified followers.
+ */
+export const getArtistAnalytics = async (req, res, next) => {
+  try {
+    const artistId = req.user._id;
+    const { timeframe = 'all' } = req.query;
+
+    // Fetch all tracks owned by artist
+    const allTracks = await Song.find({ artist: artistId });
+    const trackIds = allTracks.map((t) => t._id);
+
+    const publishedCount = allTracks.filter((t) => t.isPublished).length;
+    const unpublishedCount = allTracks.length - publishedCount;
+    const allTimePlays = allTracks.reduce((sum, t) => sum + (t.playsCount || 0), 0);
+
+    // Total followers all-time
+    const totalFollowers = await Follow.countDocuments({ artist: artistId });
+
+    // Date range filter
+    let dateFilter = null;
+    if (timeframe === '7d') {
+      dateFilter = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    } else if (timeframe === '30d') {
+      dateFilter = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    }
+
+    // Build history query
+    const historyQuery = { song: { $in: trackIds } };
+    if (dateFilter) {
+      historyQuery.playedAt = { $gte: dateFilter };
+    }
+
+    // Followers in timeframe
+    const followersQuery = { artist: artistId };
+    if (dateFilter) {
+      followersQuery.createdAt = { $gte: dateFilter };
+    }
+    const timeframeFollowers = await Follow.countDocuments(followersQuery);
+
+    // Filtered listening aggregates from History
+    const [historyCount, uniqueListenersArray, listeningDurationAgg] = await Promise.all([
+      History.countDocuments(historyQuery),
+      History.distinct('user', historyQuery),
+      History.aggregate([
+        { $match: historyQuery },
+        { $group: { _id: null, totalSeconds: { $sum: '$listenDuration' } } },
+      ]),
+    ]);
+
+    const totalDurationSeconds = listeningDurationAgg[0]?.totalSeconds || 0;
+    const uniqueListeners = uniqueListenersArray.length;
+
+    // Displayed plays: In filtered mode, reflects validated events in timeframe.
+    // In all-time mode, reflects the verified plays count on tracks.
+    const displayedPlays = dateFilter ? historyCount : allTimePlays;
+
+    // Timeline aggregation for daily stream counts
+    const timelineAggQuery = { song: { $in: trackIds } };
+    const timelineStartDate = dateFilter || new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+    timelineAggQuery.playedAt = { $gte: timelineStartDate };
+
+    const dailyPlays = await History.aggregate([
+      { $match: timelineAggQuery },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$playedAt' } },
+          plays: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Top tracks
+    let topTracks = [];
+    if (!dateFilter) {
+      topTracks = [...allTracks]
+        .sort((a, b) => (b.playsCount || 0) - (a.playsCount || 0))
+        .slice(0, 5)
+        .map((t) => ({
+          _id: t._id,
+          title: t.title,
+          genre: t.genre,
+          artworkUrl: t.artworkUrl,
+          playsCount: t.playsCount || 0,
+          isPublished: t.isPublished,
+          duration: t.duration,
+        }));
+    } else {
+      // Group history by song in the timeframe
+      const topSongAgg = await History.aggregate([
+        { $match: historyQuery },
+        { $group: { _id: '$song', periodPlays: { $sum: 1 } } },
+        { $sort: { periodPlays: -1 } },
+        { $limit: 5 },
+      ]);
+
+      const songMap = new Map(allTracks.map((t) => [t._id.toString(), t]));
+      topTracks = topSongAgg
+        .map((item) => {
+          const song = songMap.get(item._id.toString());
+          if (!song) return null;
+          return {
+            _id: song._id,
+            title: song.title,
+            genre: song.genre,
+            artworkUrl: song.artworkUrl,
+            playsCount: item.periodPlays,
+            allTimePlays: song.playsCount || 0,
+            isPublished: song.isPublished,
+            duration: song.duration,
+          };
+        })
+        .filter(Boolean);
+    }
+
+    // Genre distribution in catalog
+    const genreDistribution = {};
+    for (const track of allTracks) {
+      if (track.genre) {
+        genreDistribution[track.genre] = (genreDistribution[track.genre] || 0) + 1;
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      timeframe,
+      metrics: {
+        totalPlays: displayedPlays,
+        allTimePlays,
+        totalFollowers,
+        periodFollowers: timeframeFollowers,
+        publishedTracks: publishedCount,
+        unpublishedTracks: unpublishedCount,
+        totalTracks: allTracks.length,
+        uniqueListeners,
+        totalListeningMinutes: Math.round(totalDurationSeconds / 60),
+      },
+      topTracks,
+      timeline: dailyPlays.map((d) => ({ date: d._id, plays: d.plays })),
+      genreDistribution,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Validated Listening Play Event
  * POST /api/songs/:id/play
  * Enforces listening threshold rule (30 seconds or 50% of track length) and deduplicates

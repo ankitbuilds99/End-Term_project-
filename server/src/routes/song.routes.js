@@ -8,6 +8,7 @@ import {
   getMyTracks,
   recordPlayEvent,
   getPersonalizedDiscovery,
+  getArtistAnalytics,
 } from '../controllers/song.controller.js';
 import {
   toggleLike,
@@ -23,6 +24,7 @@ const router = express.Router();
 router.get('/', getSongs);
 router.get('/discovery/personalized', optionalAuth, getPersonalizedDiscovery);
 router.get('/artist/my-tracks', isAuthenticated, requireRole('artist', 'admin'), getMyTracks);
+router.get('/artist/analytics', isAuthenticated, requireRole('artist', 'admin'), getArtistAnalytics);
 
 // User Liked Songs routes (must precede /:id)
 router.get('/user/liked', isAuthenticated, getLikedSongs);

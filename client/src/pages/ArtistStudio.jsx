@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { usePlayer } from '../context/PlayerContext';
 import { 
   getMyTracksApi, 
+  getArtistAnalyticsApi,
   createSongApi, 
   updateSongApi, 
   deleteSongApi, 
@@ -26,7 +27,16 @@ import {
   X,
   Sparkles,
   BarChart3,
-  Layers
+  Layers,
+  Users,
+  Calendar,
+  TrendingUp,
+  Clock,
+  Activity,
+  Flame,
+  Disc,
+  Radio,
+  Loader2
 } from 'lucide-react';
 
 const GENRES = [
@@ -49,6 +59,12 @@ const ArtistStudio = () => {
   const [tracks, setTracks] = useState([]);
   const [stats, setStats] = useState({ totalTracks: 0, publishedCount: 0, totalPlays: 0 });
   const [loading, setLoading] = useState(true);
+
+  // Studio Navigation Tabs
+  const [activeTab, setActiveTab] = useState('tracks'); // 'tracks' | 'analytics'
+  const [analyticsTimeframe, setAnalyticsTimeframe] = useState('all'); // 'all' | '30d' | '7d'
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   // Upload Modal State
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -88,9 +104,29 @@ const ArtistStudio = () => {
     }
   };
 
+  const fetchAnalytics = async (tf = analyticsTimeframe) => {
+    setLoadingAnalytics(true);
+    try {
+      const res = await getArtistAnalyticsApi({ timeframe: tf });
+      if (res.data?.success) {
+        setAnalyticsData(res.data);
+      }
+    } catch (err) {
+      console.warn('Failed to load analytics:', err.message);
+    } finally {
+      setLoadingAnalytics(false);
+    }
+  };
+
   useEffect(() => {
     fetchMyTracks();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'analytics') {
+      fetchAnalytics(analyticsTimeframe);
+    }
+  }, [activeTab, analyticsTimeframe]);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -300,6 +336,51 @@ const ArtistStudio = () => {
         </button>
       </div>
 
+      {/* Studio Navigation Tabs */}
+      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '28px' }}>
+        <button
+          onClick={() => setActiveTab('tracks')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '12px 20px',
+            background: 'none',
+            border: 'none',
+            borderBottom: activeTab === 'tracks' ? '3px solid var(--accent-primary)' : '3px solid transparent',
+            color: activeTab === 'tracks' ? '#fff' : 'var(--text-muted)',
+            fontWeight: 700,
+            fontSize: '0.96rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+        >
+          <Music size={18} color={activeTab === 'tracks' ? 'var(--accent-primary)' : 'currentColor'} />
+          <span>Catalog & Uploads</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('analytics')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '12px 20px',
+            background: 'none',
+            border: 'none',
+            borderBottom: activeTab === 'analytics' ? '3px solid #ff6b81' : '3px solid transparent',
+            color: activeTab === 'analytics' ? '#fff' : 'var(--text-muted)',
+            fontWeight: 700,
+            fontSize: '0.96rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+        >
+          <BarChart3 size={18} color={activeTab === 'analytics' ? '#ff6b81' : 'currentColor'} />
+          <span>Audience & Stream Analytics</span>
+        </button>
+      </div>
+
       {/* Notifications */}
       {toastMessage && (
         <div className="form-success">
@@ -308,214 +389,510 @@ const ArtistStudio = () => {
         </div>
       )}
 
-      {/* Statistics Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '36px' }}>
-        <div className="glass-card" style={{ padding: '22px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Total Tracks</span>
-            <Music size={18} color="var(--accent-primary)" />
+      {activeTab === 'analytics' ? (
+        <div>
+          {/* Timeframe Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>
+                Audience & Streaming Analytics
+              </h2>
+              <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
+                Derived in real-time from verified listening sessions and follower activity
+              </p>
+            </div>
+
+            {/* Timeframe Selector Pills */}
+            <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--bg-deep)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+              {[
+                { label: 'All Time', value: 'all' },
+                { label: 'Last 30 Days', value: '30d' },
+                { label: 'Last 7 Days', value: '7d' },
+              ].map((tf) => (
+                <button
+                  key={tf.value}
+                  onClick={() => setAnalyticsTimeframe(tf.value)}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    backgroundColor: analyticsTimeframe === tf.value ? '#ff4757' : 'transparent',
+                    color: analyticsTimeframe === tf.value ? '#fff' : 'var(--text-muted)',
+                    fontWeight: 700,
+                    fontSize: '0.84rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {tf.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.totalTracks}</p>
-        </div>
 
-        <div className="glass-card" style={{ padding: '22px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Total Streams</span>
-            <BarChart3 size={18} color="#ff6b81" />
-          </div>
-          <p style={{ fontSize: '2rem', fontWeight: 800 }}>{formatPlays(stats.totalPlays)}</p>
-        </div>
+          {loadingAnalytics ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+              <Loader2 size={36} className="spin" color="#ff6b81" />
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              {/* 6 Key Analytics Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Total Streams</span>
+                    <Flame size={18} color="#ff4757" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {formatPlays(analyticsData?.metrics?.totalPlays || 0)}
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    {analyticsTimeframe === 'all' ? 'All-time verified plays' : `In selected ${analyticsTimeframe}`}
+                  </p>
+                </div>
 
-        <div className="glass-card" style={{ padding: '22px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Published Publicly</span>
-            <Eye size={18} color="#22e668" />
-          </div>
-          <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.publishedCount}</p>
-        </div>
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Followers</span>
+                    <Users size={18} color="#06b6d4" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {analyticsData?.metrics?.totalFollowers || 0}
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: '#22c55e', marginTop: '4px' }}>
+                    +{analyticsData?.metrics?.periodFollowers || 0} in {analyticsTimeframe === 'all' ? 'total' : analyticsTimeframe}
+                  </p>
+                </div>
 
-        <div className="glass-card" style={{ padding: '22px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Private Drafts</span>
-            <EyeOff size={18} color="var(--text-dim)" />
-          </div>
-          <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.totalTracks - stats.publishedCount}</p>
-        </div>
-      </div>
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Unique Listeners</span>
+                    <Activity size={18} color="#a855f7" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {analyticsData?.metrics?.uniqueListeners || 0}
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    Individual accounts
+                  </p>
+                </div>
 
-      {/* Tracks Table Header */}
-      <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '20px' }}>
-        Your Music Discography
-      </h2>
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Listening Time</span>
+                    <Clock size={18} color="#eab308" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {analyticsData?.metrics?.totalListeningMinutes || 0} <span style={{ fontSize: '1rem', fontWeight: 500 }}>min</span>
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    Validated airtime
+                  </p>
+                </div>
 
-      {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-          <div className="spinner-white" />
-        </div>
-      ) : tracks.length > 0 ? (
-        <div className="glass-card" style={{ overflowX: 'auto', padding: '12px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '680px' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-dim)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                <th style={{ padding: '12px 16px' }}>Track</th>
-                <th style={{ padding: '12px 16px' }}>Genre</th>
-                <th style={{ padding: '12px 16px' }}>Duration</th>
-                <th style={{ padding: '12px 16px' }}>Streams</th>
-                <th style={{ padding: '12px 16px' }}>Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tracks.map((track) => {
-                const isTrackPlaying = currentSong?._id === track._id && isPlaying;
-                return (
-                  <tr
-                    key={track._id}
-                    style={{
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                      transition: 'background 0.2s',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                  >
-                    {/* Track info & Play button */}
-                    <td style={{ padding: '14px 16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <button
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Published Releases</span>
+                    <Eye size={18} color="#22c55e" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {analyticsData?.metrics?.publishedTracks || 0}
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    Active catalogue
+                  </p>
+                </div>
+
+                <div className="glass-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Unlisted Drafts</span>
+                    <EyeOff size={18} color="var(--text-dim)" />
+                  </div>
+                  <p style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+                    {analyticsData?.metrics?.unpublishedTracks || 0}
+                  </p>
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    Studio work in progress
+                  </p>
+                </div>
+              </div>
+
+              {/* Streams Activity Timeline Chart */}
+              <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff' }}>Streams Activity Timeline</h3>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Daily validated streams across all your tracks</p>
+                  </div>
+                  <TrendingUp size={20} color="var(--accent-primary)" />
+                </div>
+
+                {(!analyticsData?.timeline || analyticsData.timeline.length === 0) ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-dim)' }}>
+                    <Activity size={36} style={{ margin: '0 auto 10px', opacity: 0.5 }} />
+                    <p style={{ fontSize: '0.9rem' }}>No stream events recorded during this timeframe yet.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '180px', paddingTop: '20px', paddingBottom: '10px', overflowX: 'auto' }}>
+                    {(() => {
+                      const maxPlays = Math.max(1, ...analyticsData.timeline.map((t) => t.plays));
+                      return analyticsData.timeline.map((point) => {
+                        const heightPct = Math.max(14, Math.round((point.plays / maxPlays) * 100));
+                        return (
+                          <div
+                            key={point.date}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              gap: '6px',
+                              flex: '1 0 38px',
+                              height: '100%',
+                              justifyContent: 'flex-end',
+                            }}
+                          >
+                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent-primary)' }}>
+                              {point.plays}
+                            </span>
+                            <div
+                              title={`${point.date}: ${point.plays} streams`}
+                              style={{
+                                width: '100%',
+                                maxWidth: '28px',
+                                height: `${heightPct}%`,
+                                borderRadius: '6px 6px 0 0',
+                                background: 'linear-gradient(180deg, var(--accent-primary) 0%, rgba(6, 182, 212, 0.4) 100%)',
+                                transition: 'all 0.3s ease',
+                                cursor: 'pointer',
+                              }}
+                            />
+                            <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)', whiteSpace: 'nowrap' }}>
+                              {point.date.slice(5)}
+                            </span>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                )}
+              </div>
+
+              {/* Top Performing Tracks */}
+              <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>
+                  Top Performing Tracks ({analyticsTimeframe === 'all' ? 'All Time' : analyticsTimeframe})
+                </h3>
+
+                {(!analyticsData?.topTracks || analyticsData.topTracks.length === 0) ? (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '24px 0' }}>
+                    No stream data available for ranking yet.
+                  </p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {analyticsData.topTracks.map((track, idx) => {
+                      const isCurrent = currentSong?._id === track._id;
+                      return (
+                        <div
+                          key={track._id}
                           onClick={() => {
-                            if (currentSong?._id === track._id) {
-                              togglePlay();
-                            } else {
-                              playSong(track, tracks);
-                            }
+                            if (isCurrent) togglePlay();
+                            else playSong(track, analyticsData.topTracks);
                           }}
                           style={{
-                            width: '38px',
-                            height: '38px',
-                            borderRadius: '8px',
-                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                            display: 'flex',
+                            display: 'grid',
+                            gridTemplateColumns: '40px 1fr 140px 100px 80px',
                             alignItems: 'center',
-                            justifyContent: 'center',
-                            color: isTrackPlaying ? 'var(--accent-primary)' : '#fff',
-                            flexShrink: 0,
+                            padding: '12px 16px',
+                            borderRadius: '10px',
+                            backgroundColor: isCurrent ? 'var(--bg-surface-elevated)' : 'var(--bg-surface)',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.15s ease',
                           }}
                         >
-                          {isTrackPlaying ? <Pause size={18} /> : <Play size={18} />}
-                        </button>
+                          <span style={{ fontWeight: 800, color: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#d97706' : 'var(--text-dim)', fontSize: '1rem' }}>
+                            #{idx + 1}
+                          </span>
 
-                        <img
-                          src={resolveMediaUrl(track.artworkUrl)}
-                          alt={track.title}
-                          style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover' }}
-                        />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                            <img
+                              src={resolveMediaUrl(track.artworkUrl)}
+                              alt={track.title}
+                              style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }}
+                            />
+                            <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                              <p style={{ fontSize: '0.92rem', fontWeight: 700, color: isCurrent ? 'var(--accent-primary)' : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {track.title}
+                              </p>
+                              <p style={{ fontSize: '0.76rem', color: 'var(--text-dim)' }}>
+                                {track.genre}
+                              </p>
+                            </div>
+                          </div>
 
-                        <div>
-                          <p style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>
-                            {track.title}
-                          </p>
-                          <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-                            {track.album || 'Single'}
-                          </p>
+                          <span style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                            {formatTime(track.duration)}
+                          </span>
+
+                          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--accent-primary)' }}>
+                            {formatPlays(track.playsCount)}
+                          </span>
+
+                          <span style={{ fontSize: '0.72rem', padding: '3px 8px', borderRadius: '9999px', textAlign: 'center', backgroundColor: track.isPublished ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255, 255, 255, 0.05)', color: track.isPublished ? '#4ade80' : 'var(--text-dim)' }}>
+                            {track.isPublished ? 'Live' : 'Draft'}
+                          </span>
                         </div>
-                      </div>
-                    </td>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
-                    {/* Genre */}
-                    <td style={{ padding: '14px 16px' }}>
-                      <span style={{ fontSize: '0.76rem', padding: '3px 10px', borderRadius: '9999px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)' }}>
-                        {track.genre}
-                      </span>
-                    </td>
-
-                    {/* Duration */}
-                    <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                      {formatTime(track.duration)}
-                    </td>
-
-                    {/* Plays Count */}
-                    <td style={{ padding: '14px 16px', fontSize: '0.85rem', fontWeight: 600 }}>
-                      {formatPlays(track.playsCount)}
-                    </td>
-
-                    {/* Status Badge */}
-                    <td style={{ padding: '14px 16px' }}>
-                      <button
-                        onClick={() => handleTogglePublish(track)}
-                        title="Click to toggle publish visibility"
+              {/* Genre Distribution in Catalog */}
+              {analyticsData?.genreDistribution && Object.keys(analyticsData.genreDistribution).length > 0 && (
+                <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '14px' }}>
+                    Catalog Soundscape
+                  </h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    {Object.entries(analyticsData.genreDistribution).map(([genre, count]) => (
+                      <div
+                        key={genre}
                         style={{
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          padding: '4px 10px',
-                          borderRadius: '9999px',
-                          border: track.isPublished ? '1px solid rgba(30, 215, 96, 0.4)' : '1px solid var(--border-subtle)',
-                          backgroundColor: track.isPublished ? 'rgba(30, 215, 96, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                          color: track.isPublished ? '#22e668' : 'var(--text-dim)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
+                          display: 'flex',
                           alignItems: 'center',
-                          gap: '5px',
+                          gap: '8px',
+                          padding: '8px 16px',
+                          borderRadius: '10px',
+                          backgroundColor: 'var(--bg-surface)',
+                          border: '1px solid var(--border-subtle)',
                         }}
                       >
-                        {track.isPublished ? <Eye size={12} /> : <EyeOff size={12} />}
-                        <span>{track.isPublished ? 'Published' : 'Draft (Private)'}</span>
-                      </button>
-                    </td>
-
-                    {/* Actions */}
-                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                        <button
-                          onClick={() => openEditModal(track)}
-                          title="Edit track"
-                          style={{
-                            padding: '6px',
-                            color: 'var(--text-muted)',
-                            borderRadius: '6px',
-                            transition: 'color 0.2s',
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-                          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-
-                        <button
-                          onClick={() => handleDeleteTrack(track._id, track.title)}
-                          title="Delete track"
-                          style={{
-                            padding: '6px',
-                            color: 'var(--text-dim)',
-                            borderRadius: '6px',
-                            transition: 'color 0.2s',
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--error-text)')}
-                          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-dim)')}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <Disc size={16} color="var(--accent-primary)" />
+                        <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#fff' }}>{genre}</span>
+                        <span style={{ fontSize: '0.76rem', padding: '2px 8px', borderRadius: '9999px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)', fontWeight: 700 }}>
+                          {count} {count === 1 ? 'track' : 'tracks'}
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
-        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center' }}>
-          <Music size={40} color="var(--text-dim)" style={{ marginBottom: '16px' }} />
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>
-            No Tracks Released Yet
-          </h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            Share your voice with listeners across the world. Upload your first track today!
-          </p>
-          <button onClick={() => setIsUploadOpen(true)} className="btn-primary">
-            <Plus size={18} />
-            <span>Upload My First Track</span>
-          </button>
-        </div>
+        /* Discography & Tracks content (existing) */
+        <>
+          {/* Statistics Cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '36px' }}>
+            <div className="glass-card" style={{ padding: '22px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Total Tracks</span>
+                <Music size={18} color="var(--accent-primary)" />
+              </div>
+              <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.totalTracks}</p>
+            </div>
+
+            <div className="glass-card" style={{ padding: '22px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Total Streams</span>
+                <BarChart3 size={18} color="#ff6b81" />
+              </div>
+              <p style={{ fontSize: '2rem', fontWeight: 800 }}>{formatPlays(stats.totalPlays)}</p>
+            </div>
+
+            <div className="glass-card" style={{ padding: '22px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Published Publicly</span>
+                <Eye size={18} color="#22e668" />
+              </div>
+              <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.publishedCount}</p>
+            </div>
+
+            <div className="glass-card" style={{ padding: '22px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontWeight: 600 }}>Private Drafts</span>
+                <EyeOff size={18} color="var(--text-dim)" />
+              </div>
+              <p style={{ fontSize: '2rem', fontWeight: 800 }}>{stats.totalTracks - stats.publishedCount}</p>
+            </div>
+          </div>
+
+          {/* Tracks Table Header */}
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '20px' }}>
+            Your Music Discography
+          </h2>
+
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
+              <div className="spinner-white" />
+            </div>
+          ) : tracks.length > 0 ? (
+            <div className="glass-card" style={{ overflowX: 'auto', padding: '12px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '680px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-dim)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    <th style={{ padding: '12px 16px' }}>Track</th>
+                    <th style={{ padding: '12px 16px' }}>Genre</th>
+                    <th style={{ padding: '12px 16px' }}>Duration</th>
+                    <th style={{ padding: '12px 16px' }}>Streams</th>
+                    <th style={{ padding: '12px 16px' }}>Status</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tracks.map((track) => {
+                    const isTrackPlaying = currentSong?._id === track._id && isPlaying;
+                    return (
+                      <tr
+                        key={track._id}
+                        style={{
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+                          transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                      >
+                        {/* Track info & Play button */}
+                        <td style={{ padding: '14px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <button
+                              onClick={() => {
+                                if (currentSong?._id === track._id) {
+                                  togglePlay();
+                                } else {
+                                  playSong(track, tracks);
+                                }
+                              }}
+                              style={{
+                                width: '38px',
+                                height: '38px',
+                                borderRadius: '8px',
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: isTrackPlaying ? 'var(--accent-primary)' : '#fff',
+                                flexShrink: 0,
+                              }}
+                            >
+                              {isTrackPlaying ? <Pause size={18} /> : <Play size={18} />}
+                            </button>
+
+                            <img
+                              src={resolveMediaUrl(track.artworkUrl)}
+                              alt={track.title}
+                              style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover' }}
+                            />
+
+                            <div>
+                              <p style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>
+                                {track.title}
+                              </p>
+                              <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+                                {track.album || 'Single'}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Genre */}
+                        <td style={{ padding: '14px 16px' }}>
+                          <span style={{ fontSize: '0.76rem', padding: '3px 10px', borderRadius: '9999px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)' }}>
+                            {track.genre}
+                          </span>
+                        </td>
+
+                        {/* Duration */}
+                        <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                          {formatTime(track.duration)}
+                        </td>
+
+                        {/* Plays Count */}
+                        <td style={{ padding: '14px 16px', fontSize: '0.85rem', fontWeight: 600 }}>
+                          {formatPlays(track.playsCount)}
+                        </td>
+
+                        {/* Status Badge */}
+                        <td style={{ padding: '14px 16px' }}>
+                          <button
+                            onClick={() => handleTogglePublish(track)}
+                            title="Click to toggle publish visibility"
+                            style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              padding: '4px 10px',
+                              borderRadius: '9999px',
+                              border: track.isPublished ? '1px solid rgba(30, 215, 96, 0.4)' : '1px solid var(--border-subtle)',
+                              backgroundColor: track.isPublished ? 'rgba(30, 215, 96, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                              color: track.isPublished ? '#22e668' : 'var(--text-dim)',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '5px',
+                            }}
+                          >
+                            {track.isPublished ? <Eye size={12} /> : <EyeOff size={12} />}
+                            <span>{track.isPublished ? 'Published' : 'Draft (Private)'}</span>
+                          </button>
+                        </td>
+
+                        {/* Actions */}
+                        <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <button
+                              onClick={() => openEditModal(track)}
+                              title="Edit track"
+                              style={{
+                                padding: '6px',
+                                color: 'var(--text-muted)',
+                                borderRadius: '6px',
+                                transition: 'color 0.2s',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+                              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                            >
+                              <Edit2 size={16} />
+                            </button>
+
+                            <button
+                              onClick={() => handleDeleteTrack(track._id, track.title)}
+                              title="Delete track"
+                              style={{
+                                padding: '6px',
+                                color: 'var(--text-dim)',
+                                borderRadius: '6px',
+                                transition: 'color 0.2s',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--error-text)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-dim)')}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <Music size={40} color="var(--text-dim)" style={{ marginBottom: '16px' }} />
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>
+                No Tracks Released Yet
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+                Share your voice with listeners across the world. Upload your first track today!
+              </p>
+              <button onClick={() => setIsUploadOpen(true)} className="btn-primary">
+                <Plus size={18} />
+                <span>Upload My First Track</span>
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Upload Track Modal */}

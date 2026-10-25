@@ -39,6 +39,7 @@ export const getMyFollowedArtistsApi = () => api.get('/users/me/following');
 export const getSongsApi = (params = {}) => api.get('/songs', { params });
 export const getSongByIdApi = (id) => api.get(`/songs/${id}`);
 export const getMyTracksApi = () => api.get('/songs/artist/my-tracks');
+export const getArtistAnalyticsApi = (params = {}) => api.get('/songs/artist/analytics', { params });
 export const createSongApi = (formData) =>
   api.post('/songs', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

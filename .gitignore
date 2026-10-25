@@ -10,12 +10,16 @@ coverage/
 build/
 dist/
 
-# Environment Variables
+# Environment Variables & Secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+
+# Uploaded User Binaries & Media
+server/uploads/artwork/*
+!server/uploads/artwork/.gitkeep
+server/uploads/audio/*
+!server/uploads/audio/.gitkeep
 
 # Logs
 npm-debug.log*

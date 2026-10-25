@@ -25,19 +25,22 @@ const Sidebar = () => {
   };
 
   return (
-    <aside style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      bottom: 0,
-      width: 'var(--sidebar-width)',
-      backgroundColor: 'var(--bg-deep)',
-      borderRight: '1px solid var(--border-subtle)',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '24px 16px',
-      zIndex: 100,
-    }}>
+    <aside
+      className="app-sidebar"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: 'var(--sidebar-width)',
+        backgroundColor: 'var(--bg-deep)',
+        borderRight: '1px solid var(--border-subtle)',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '24px 16px',
+        zIndex: 100,
+      }}
+    >
       {/* Brand Header */}
       <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0 8px', marginBottom: '32px' }}>
         <div style={{

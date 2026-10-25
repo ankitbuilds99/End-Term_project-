@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PlayerProvider } from './context/PlayerContext';
 import Sidebar from './components/Sidebar';
+import MobileNav from './components/MobileNav';
 import Navbar from './components/Navbar';
 import AudioPlayer from './components/AudioPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -71,6 +72,9 @@ function App() {
 
             {/* Single shared persistent Audio Player */}
             <AudioPlayer />
+
+            {/* Mobile Bottom Navigation */}
+            <MobileNav />
           </div>
         </PlayerProvider>
       </AuthProvider>

@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import songRoutes from './routes/song.routes.js';
 import playlistRoutes from './routes/playlist.routes.js';
+import { rateLimiter } from './middlewares/rateLimit.middleware.js';
 import { notFoundHandler, errorHandler } from './middlewares/error.middleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,6 +49,10 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// Rate Limiting on authentication to prevent abuse & brute force
+app.use('/api/auth/login', rateLimiter({ windowMs: 15 * 60 * 1000, max: 25, message: 'Too many login attempts. Please try again after 15 minutes.' }));
+app.use('/api/auth/register', rateLimiter({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many registration requests. Please wait a bit.' }));
 
 // API Routes
 app.use('/api/auth', authRoutes);
