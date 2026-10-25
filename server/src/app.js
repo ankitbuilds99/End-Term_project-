@@ -1,9 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
+import songRoutes from './routes/song.routes.js';
 import { notFoundHandler, errorHandler } from './middlewares/error.middleware.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -30,6 +36,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// Serve uploaded static media files (audio & artwork)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Health Check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -42,6 +51,7 @@ app.get('/api/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/songs', songRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -52,6 +62,7 @@ app.get('/', (req, res) => {
       health: '/api/health',
       auth: '/api/auth',
       users: '/api/users',
+      songs: '/api/songs',
     },
   });
 });

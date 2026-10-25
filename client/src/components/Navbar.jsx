@@ -61,21 +61,29 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Global Search Bar (Phase 1 discovery teaser) */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          backgroundColor: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: '9999px',
-          padding: '8px 16px',
-          width: '320px',
-        }}>
+        {/* Global Search Bar */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const q = e.currentTarget.search.value;
+            navigate(`/catalogue${q ? `?search=${encodeURIComponent(q)}` : ''}`);
+          }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '9999px',
+            padding: '8px 16px',
+            width: '320px',
+          }}
+        >
           <Search size={16} color="var(--text-dim)" />
           <input
+            name="search"
             type="text"
-            placeholder="Search artists, tracks, or genres..."
+            placeholder="Search tracks, artists, or genres..."
             style={{
               background: 'transparent',
               border: 'none',
@@ -85,12 +93,12 @@ const Navbar = () => {
               width: '100%',
             }}
             onFocus={(e) => {
-              if (location.pathname !== '/artists') {
-                navigate('/artists');
+              if (location.pathname !== '/catalogue') {
+                navigate('/catalogue');
               }
             }}
           />
-        </div>
+        </form>
       </div>
 
       {/* Auth Actions / User Pill */}

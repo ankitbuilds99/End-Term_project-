@@ -89,6 +89,29 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
+          to="/catalogue"
+          style={({ isActive }) => ({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            padding: '12px 14px',
+            borderRadius: '10px',
+            fontSize: '0.94rem',
+            fontWeight: 600,
+            color: isActive ? '#fff' : 'var(--text-muted)',
+            backgroundColor: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
+            transition: 'all 0.2s ease',
+          })}
+        >
+          {({ isActive }) => (
+            <>
+              <Music2 size={20} color={isActive ? 'var(--accent-primary)' : 'currentColor'} />
+              <span>Music Catalogue</span>
+            </>
+          )}
+        </NavLink>
+
+        <NavLink
           to="/artists"
           style={({ isActive }) => ({
             display: 'flex',
@@ -117,6 +140,32 @@ const Sidebar = () => {
               My Account
             </p>
 
+            {isArtist && (
+              <NavLink
+                to="/studio"
+                style={({ isActive }) => ({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  padding: '12px 14px',
+                  borderRadius: '10px',
+                  fontSize: '0.94rem',
+                  fontWeight: 600,
+                  color: isActive ? '#fff' : 'var(--text-muted)',
+                  backgroundColor: isActive ? 'rgba(255, 65, 108, 0.15)' : 'transparent',
+                  border: isActive ? '1px solid rgba(255, 65, 108, 0.3)' : '1px solid transparent',
+                  transition: 'all 0.2s ease',
+                })}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Sparkles size={20} color={isActive ? '#ff6b81' : '#ff4757'} />
+                    <span style={{ color: isActive ? '#ff6b81' : 'var(--text-main)' }}>Artist Studio</span>
+                  </>
+                )}
+              </NavLink>
+            )}
+
             <NavLink
               to="/profile"
               style={({ isActive }) => ({
@@ -139,26 +188,6 @@ const Sidebar = () => {
                 </>
               )}
             </NavLink>
-
-            {isArtist && (
-              <div style={{
-                marginTop: '12px',
-                padding: '12px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, rgba(255, 65, 108, 0.1) 0%, rgba(255, 75, 43, 0.05) 100%)',
-                border: '1px solid rgba(255, 65, 108, 0.25)',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                  <Sparkles size={16} color="#ff6b81" />
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ff6b81', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Artist Portal
-                  </span>
-                </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                  {user.artistProfile?.stageName || user.name}
-                </p>
-              </div>
-            )}
           </>
         )}
       </nav>

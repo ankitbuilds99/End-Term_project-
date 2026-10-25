@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import User from './src/models/user.model.js';
+import Song from './src/models/song.model.js';
 
 dotenv.config();
 
@@ -84,16 +85,114 @@ const seedDemoData = async () => {
       },
     ];
 
+    const userMap = {};
+
     for (const userData of demoUsers) {
-      const exists = await User.findOne({
+      let user = await User.findOne({
         $or: [{ email: userData.email }, { username: userData.username }],
       });
 
-      if (!exists) {
-        await User.create(userData);
+      if (!user) {
+        user = await User.create(userData);
         console.log(`[Seed] Created ${userData.role}: ${userData.name} (@${userData.username})`);
       } else {
-        console.log(`[Seed] User ${userData.username} already exists. Skipping.`);
+        console.log(`[Seed] User ${userData.username} already exists.`);
+      }
+      userMap[userData.username] = user;
+    }
+
+    // Seed Authorized Audio Tracks
+    const demoSongs = [
+      {
+        title: 'Shayad (Soulful Acoustic Reprise)',
+        artist: userMap['arijitsingh']._id,
+        genre: 'Bollywood',
+        album: 'Acoustic Memories',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+        duration: 372,
+        playsCount: 1420,
+        isPublished: true,
+      },
+      {
+        title: 'Tum Hi Ho (Midnight Piano Session)',
+        artist: userMap['arijitsingh']._id,
+        genre: 'Bollywood',
+        album: 'Aashiqui Sessions',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=600&q=80',
+        duration: 423,
+        playsCount: 2840,
+        isPublished: true,
+      },
+      {
+        title: 'Cold / Mess (Heartbreak Sunset)',
+        artist: userMap['prateekkuhad']._id,
+        genre: 'Indie Pop',
+        album: 'Cold / Mess EP',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+        duration: 345,
+        playsCount: 3120,
+        isPublished: true,
+      },
+      {
+        title: 'Kasoor (Gentle Breeze)',
+        artist: userMap['prateekkuhad']._id,
+        genre: 'Folk & Acoustic',
+        album: 'Kasoor Single',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80',
+        duration: 302,
+        playsCount: 1890,
+        isPublished: true,
+      },
+      {
+        title: 'Udd Gaye (Future Bass Drop)',
+        artist: userMap['ritviz']._id,
+        genre: 'Electronic / EDM',
+        album: 'Bacardi Sessions',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80',
+        duration: 391,
+        playsCount: 4560,
+        isPublished: true,
+      },
+      {
+        title: 'Liggi (Festive Synth Beats)',
+        artist: userMap['ritviz']._id,
+        genre: 'Electronic / EDM',
+        album: 'Yuv EP',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80',
+        duration: 334,
+        playsCount: 2210,
+        isPublished: true,
+      },
+      {
+        title: 'Unreleased Studio Demo (Draft)',
+        artist: userMap['arijitsingh']._id,
+        genre: 'Acoustic',
+        album: 'Private Demos',
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+        duration: 180,
+        playsCount: 0,
+        isPublished: false, // Unpublished track for testing publication visibility
+      },
+    ];
+
+    for (const songData of demoSongs) {
+      const exists = await Song.findOne({
+        title: songData.title,
+        artist: songData.artist,
+      });
+
+      if (!exists) {
+        await Song.create(songData);
+        console.log(`[Seed] Created song: "${songData.title}" (${songData.genre})`);
+      } else {
+        console.log(`[Seed] Song "${songData.title}" already exists.`);
       }
     }
 
