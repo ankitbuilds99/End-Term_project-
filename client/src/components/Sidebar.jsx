@@ -9,7 +9,10 @@ import {
   LogOut, 
   Radio, 
   Music2, 
-  Disc3 
+  Disc3,
+  Heart,
+  ListMusic,
+  History
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -133,6 +136,81 @@ const Sidebar = () => {
             </>
           )}
         </NavLink>
+
+        <p style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', fontWeight: 700, padding: '16px 12px 4px 12px' }}>
+          Library
+        </p>
+
+        <NavLink
+          to="/liked"
+          style={({ isActive }) => ({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            padding: '12px 14px',
+            borderRadius: '10px',
+            fontSize: '0.94rem',
+            fontWeight: 600,
+            color: isActive ? '#fff' : 'var(--text-muted)',
+            backgroundColor: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
+            transition: 'all 0.2s ease',
+          })}
+        >
+          {({ isActive }) => (
+            <>
+              <Heart size={20} color={isActive ? '#ff3366' : 'currentColor'} fill={isActive ? '#ff3366' : 'none'} />
+              <span>Liked Songs</span>
+            </>
+          )}
+        </NavLink>
+
+        <NavLink
+          to="/playlists"
+          style={({ isActive }) => ({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            padding: '12px 14px',
+            borderRadius: '10px',
+            fontSize: '0.94rem',
+            fontWeight: 600,
+            color: isActive ? '#fff' : 'var(--text-muted)',
+            backgroundColor: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
+            transition: 'all 0.2s ease',
+          })}
+        >
+          {({ isActive }) => (
+            <>
+              <ListMusic size={20} color={isActive ? 'var(--accent-primary)' : 'currentColor'} />
+              <span>Playlists</span>
+            </>
+          )}
+        </NavLink>
+
+        {user && (
+          <NavLink
+            to="/history"
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              padding: '12px 14px',
+              borderRadius: '10px',
+              fontSize: '0.94rem',
+              fontWeight: 600,
+              color: isActive ? '#fff' : 'var(--text-muted)',
+              backgroundColor: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
+              transition: 'all 0.2s ease',
+            })}
+          >
+            {({ isActive }) => (
+              <>
+                <History size={20} color={isActive ? 'var(--accent-primary)' : 'currentColor'} />
+                <span>Listening History</span>
+              </>
+            )}
+          </NavLink>
+        )}
 
         {user && (
           <>

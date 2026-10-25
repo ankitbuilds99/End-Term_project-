@@ -19,7 +19,8 @@ import {
   Trash2,
   Music2,
   Disc3,
-  Loader2
+  Loader2,
+  Heart
 } from 'lucide-react';
 
 const AudioPlayer = () => {
@@ -49,6 +50,8 @@ const AudioPlayer = () => {
     removeFromQueue,
     clearQueue,
     toggleQueueModal,
+    isSongLiked,
+    toggleLikeTrack,
   } = usePlayer();
 
   if (!currentSong) {
@@ -125,6 +128,29 @@ const AudioPlayer = () => {
               {artistName}
             </p>
           </div>
+
+          {/* Like/Heart Button */}
+          <button
+            onClick={() => toggleLikeTrack(currentSong._id)}
+            title={isSongLiked(currentSong._id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: isSongLiked(currentSong._id) ? '#ff3366' : 'var(--text-dim)',
+              marginLeft: '8px',
+              padding: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              transition: 'transform 0.2s, color 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.2)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          >
+            <Heart size={19} fill={isSongLiked(currentSong._id) ? '#ff3366' : 'none'} />
+          </button>
         </div>
 
         {/* Center: Playback Controls & Seek Bar */}

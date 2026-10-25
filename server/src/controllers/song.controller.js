@@ -1,5 +1,8 @@
 import Song from '../models/song.model.js';
 import User from '../models/user.model.js';
+import History from '../models/history.model.js';
+import Follow from '../models/follow.model.js';
+import Like from '../models/like.model.js';
 import { cleanupUploadedFiles, deleteLocalMedia, getAudioDuration } from '../utils/upload.js';
 
 // Cache to prevent arbitrary client-side play event spamming and duplicate counts
@@ -409,10 +412,160 @@ export const recordPlayEvent = async (req, res, next) => {
       { new: true }
     );
 
+    // If authenticated user, record listening history entry
+    if (req.user?._id) {
+      try {
+        await History.create({
+          user: req.user._id,
+          song: song._id,
+          listenDuration: durationPlayed,
+          playedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Failed to log listening history:', err);
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Validated play recorded.',
       playsCount: updatedSong.playsCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Personalized Discovery Feed
+ * GET /api/songs/discovery/personalized
+ * 
+ * Rule-based recommendation algorithm:
+ * - Followed Artists: +50 weight
+ * - Preferred Genres (from user's likes & history): +30 weight for primary, +15 for secondary
+ * - Popularity: scaled up to +20 weight based on total plays
+ * - Recency: +10 weight for tracks published within last 30 days
+ * - Freshness: +15 weight for tracks not yet listened to by this user
+ * Fallback:
+ * - If user has no history or is not logged in, returns top popular songs across diverse genres.
+ */
+export const getPersonalizedDiscovery = async (req, res, next) => {
+  try {
+    const userId = req.user?._id;
+    const limit = Math.min(30, Math.max(1, parseInt(req.query.limit, 10) || 12));
+
+    // Fallback: If not logged in, return top popular tracks
+    if (!userId) {
+      const fallbackSongs = await Song.find({ isPublished: true })
+        .populate('artist', 'name username avatar artistProfile')
+        .sort({ playsCount: -1, createdAt: -1 })
+        .limit(limit);
+
+      return res.status(200).json({
+        success: true,
+        strategy: 'fallback_popular',
+        songs: fallbackSongs,
+      });
+    }
+
+    // 1. Gather signals: Followed artists, Liked songs, and Listening history
+    const [follows, likes, history] = await Promise.all([
+      Follow.find({ follower: userId }).select('artist'),
+      Like.find({ user: userId }).populate('song', 'genre'),
+      History.find({ user: userId }).populate('song', 'genre').sort({ playedAt: -1 }).limit(50),
+    ]);
+
+    const followedArtistIds = new Set(follows.map((f) => f.artist.toString()));
+    const listenedSongIds = new Set(history.map((h) => h.song?._id?.toString()).filter(Boolean));
+
+    // Calculate genre preferences
+    const genreCounts = {};
+    for (const like of likes) {
+      if (like.song?.genre) {
+        genreCounts[like.song.genre] = (genreCounts[like.song.genre] || 0) + 2;
+      }
+    }
+    for (const item of history) {
+      if (item.song?.genre) {
+        genreCounts[item.song.genre] = (genreCounts[item.song.genre] || 0) + 1;
+      }
+    }
+
+    const sortedGenres = Object.entries(genreCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([genre]) => genre);
+
+    const primaryGenre = sortedGenres[0];
+    const secondaryGenre = sortedGenres[1];
+
+    // If new user with no signals at all, return diverse popular tracks fallback
+    if (followedArtistIds.size === 0 && sortedGenres.length === 0) {
+      const fallbackSongs = await Song.find({ isPublished: true })
+        .populate('artist', 'name username avatar artistProfile')
+        .sort({ playsCount: -1, createdAt: -1 })
+        .limit(limit);
+
+      return res.status(200).json({
+        success: true,
+        strategy: 'fallback_new_user',
+        songs: fallbackSongs,
+      });
+    }
+
+    // Fetch candidate published songs
+    const candidates = await Song.find({ isPublished: true })
+      .populate('artist', 'name username avatar artistProfile')
+      .limit(100);
+
+    const now = Date.now();
+    const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+
+    // Score candidates
+    const scoredCandidates = candidates.map((song) => {
+      let score = 0;
+      const artistIdStr = song.artist?._id?.toString();
+      const songIdStr = song._id.toString();
+
+      // Followed artist boost (+50)
+      if (artistIdStr && followedArtistIds.has(artistIdStr)) {
+        score += 50;
+      }
+
+      // Genre match boost
+      if (primaryGenre && song.genre.toLowerCase() === primaryGenre.toLowerCase()) {
+        score += 30;
+      } else if (secondaryGenre && song.genre.toLowerCase() === secondaryGenre.toLowerCase()) {
+        score += 15;
+      }
+
+      // Popularity factor (+0 to +20)
+      score += Math.min(20, (song.playsCount || 0) * 2);
+
+      // Recency boost (+10 if within last 30 days)
+      if (new Date(song.createdAt).getTime() > thirtyDaysAgo) {
+        score += 10;
+      }
+
+      // Freshness bonus (+15 if not yet listened)
+      if (!listenedSongIds.has(songIdStr)) {
+        score += 15;
+      }
+
+      return { song, score };
+    });
+
+    scoredCandidates.sort((a, b) => b.score - a.score);
+
+    const recommendedSongs = scoredCandidates.slice(0, limit).map((c) => c.song);
+
+    return res.status(200).json({
+      success: true,
+      strategy: 'rule_based_personalized',
+      songs: recommendedSongs,
+      signals: {
+        followedArtistsCount: followedArtistIds.size,
+        topGenres: sortedGenres.slice(0, 3),
+      },
     });
   } catch (error) {
     next(error);

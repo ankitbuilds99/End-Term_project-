@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import songRoutes from './routes/song.routes.js';
+import playlistRoutes from './routes/playlist.routes.js';
 import { notFoundHandler, errorHandler } from './middlewares/error.middleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +53,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/songs', songRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -63,6 +65,7 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       users: '/api/users',
       songs: '/api/songs',
+      playlists: '/api/playlists',
     },
   });
 });

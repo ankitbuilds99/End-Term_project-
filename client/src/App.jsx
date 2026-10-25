@@ -10,6 +10,10 @@ import Home from './pages/Home';
 import Catalogue from './pages/Catalogue';
 import Artists from './pages/Artists';
 import ArtistStudio from './pages/ArtistStudio';
+import LikedSongs from './pages/LikedSongs';
+import Playlists from './pages/Playlists';
+import PlaylistDetails from './pages/PlaylistDetails';
+import History from './pages/History';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -31,6 +35,17 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/catalogue" element={<Catalogue />} />
                   <Route path="/artists" element={<Artists />} />
+                  <Route path="/liked" element={<LikedSongs />} />
+                  <Route path="/playlists" element={<Playlists />} />
+                  <Route path="/playlists/:id" element={<PlaylistDetails />} />
+                  <Route
+                    path="/history"
+                    element={
+                      <ProtectedRoute>
+                        <History />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route

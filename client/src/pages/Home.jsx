@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getHealthApi, listArtistsApi, getSongsApi } from '../services/api';
+import { getHealthApi, listArtistsApi, getSongsApi, getPersonalizedDiscoveryApi } from '../services/api';
 import SongCard from '../components/SongCard';
 import { 
   Play, 
@@ -14,7 +14,9 @@ import {
   TrendingUp,
   Disc,
   Music2,
-  Flame
+  Flame,
+  Heart,
+  Compass
 } from 'lucide-react';
 
 const Home = () => {
@@ -22,6 +24,8 @@ const Home = () => {
   const [healthStatus, setHealthStatus] = useState('checking');
   const [featuredArtists, setFeaturedArtists] = useState([]);
   const [trendingSongs, setTrendingSongs] = useState([]);
+  const [recommendedSongs, setRecommendedSongs] = useState([]);
+  const [discoveryStrategy, setDiscoveryStrategy] = useState('');
   const [loadingContent, setLoadingContent] = useState(true);
 
   useEffect(() => {
@@ -34,22 +38,27 @@ const Home = () => {
       })
       .catch(() => setHealthStatus('disconnected'));
 
-    // Fetch featured artists and trending songs in parallel
+    // Fetch featured artists, trending songs, and personalized discovery
     Promise.all([
       listArtistsApi({ limit: 4 }),
-      getSongsApi({ limit: 6, sort: 'popular' })
+      getSongsApi({ limit: 6, sort: 'popular' }),
+      getPersonalizedDiscoveryApi({ limit: 6 }),
     ])
-      .then(([artistsRes, songsRes]) => {
+      .then(([artistsRes, songsRes, discoveryRes]) => {
         if (artistsRes.data?.success) {
           setFeaturedArtists(artistsRes.data.artists || []);
         }
         if (songsRes.data?.success) {
           setTrendingSongs(songsRes.data.songs || []);
         }
+        if (discoveryRes.data?.success) {
+          setRecommendedSongs(discoveryRes.data.songs || []);
+          setDiscoveryStrategy(discoveryRes.data.strategy || '');
+        }
       })
       .catch((err) => console.error('Failed to load home content:', err))
       .finally(() => setLoadingContent(false));
-  }, []);
+  }, [user]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -122,6 +131,49 @@ const Home = () => {
             )}
           </div>
         </div>
+      </section>
+
+      {/* Made For You / Discovery Section */}
+      <section style={{ marginBottom: '48px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Sparkles size={22} color="var(--accent-primary)" />
+            <div>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
+                {user ? 'Made For You' : 'Recommended Discovery'}
+              </h2>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                {discoveryStrategy === 'rule_based_personalized'
+                  ? 'Personalized based on followed artists, favorite genres & listening habits'
+                  : 'Trending selections across genres to explore'}
+              </p>
+            </div>
+          </div>
+          <Link to="/catalogue" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-primary)', fontWeight: 700, fontSize: '0.88rem' }}>
+            <span>Explore All</span>
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        {loadingContent ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+            <div className="spinner-white" />
+          </div>
+        ) : recommendedSongs.length > 0 ? (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '18px',
+          }}>
+            {recommendedSongs.map((song) => (
+              <SongCard key={song._id} song={song} playlist={recommendedSongs} />
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card" style={{ padding: '36px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)' }}>No recommendations available right now.</p>
+          </div>
+        )}
       </section>
 
       {/* Trending Songs Section */}

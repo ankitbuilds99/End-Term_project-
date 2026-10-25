@@ -177,46 +177,87 @@ npm run dev
 
 ---
 
+---
+
+## 🎧 Phase 3 Implementation: Following, Likes, Playlists, History & Discovery
+
+### Completed Features
+
+1. **Follow Model & Artist Network**:
+   - Schema fields: `follower` (User ref), `artist` (User ref), `createdAt`.
+   - Unique compound index `{ follower: 1, artist: 1 }` ensuring duplicate follows cannot occur.
+   - Self-follow prevention with HTTP 400 Bad Request.
+   - Follower count calculation dynamically reflecting follow/unfollow actions.
+   - Endpoints:
+     - `POST /api/users/:artistId/follow` — Toggle follow/unfollow with race-condition deduplication.
+     - `GET /api/users/:artistId/is-following` — Check if current user follows an artist and get total follower count.
+     - `GET /api/users/me/following` — List artists followed by current user.
+
+2. **Like Model & Liked Songs Collection**:
+   - Schema fields: `user` (User ref), `song` (Song ref), `createdAt`.
+   - Unique compound index `{ user: 1, song: 1 }` preventing duplicate likes.
+   - Persistent Liked Songs page (`/liked`) with hero banner, total count, duration calculation, un-like action, and "Play All" queue integration.
+   - Fast ID retrieval for instant UI heart states across the whole application:
+     - `POST /api/songs/:id/like` — Toggle like/unlike track.
+     - `GET /api/songs/user/liked` — Paginated list of liked tracks with populated artist profiles.
+     - `GET /api/songs/user/liked-ids` — Lightweight list of liked song IDs for fast client heart rendering.
+
+3. **Playlists (CRUD, Ownership & Privacy)**:
+   - Schema fields: `title`, `description`, `coverUrl`, `isPublic`, `owner` (User ref), `songs` (ordered array of Song refs), `timestamps`.
+   - Ownership enforcement: Only the playlist owner (or admin) can edit metadata, delete, add tracks, remove tracks, or reorder tracks.
+   - Privacy security: Private playlists (`isPublic: false`) are strictly inaccessible to unauthorized users (returns 404).
+   - In-place track reordering: Supports custom track order persisted in MongoDB.
+   - 1-Click "Add to Playlist" modal with inline playlist creation.
+   - Playlist playback: Seamlessly loads entire playlist in custom track order into the global player and queue.
+   - Endpoints:
+     - `POST /api/playlists` — Create a new playlist.
+     - `GET /api/playlists` — Browse public community playlists.
+     - `GET /api/playlists/my-playlists` — Retrieve authenticated user's private and public playlists.
+     - `GET /api/playlists/:id` — Get playlist with ordered tracks (enforces privacy).
+     - `PUT /api/playlists/:id` — Update playlist title, description, cover, and visibility (owner only).
+     - `DELETE /api/playlists/:id` — Delete playlist (owner only).
+     - `POST /api/playlists/:id/songs` — Add track to playlist (prevents duplicate addition, owner only).
+     - `DELETE /api/playlists/:id/songs/:songId` — Remove track from playlist (owner only).
+     - `PUT /api/playlists/:id/reorder` — Persist ordered array of song IDs (owner only).
+
+4. **User-Specific Listening History**:
+   - Schema fields: `user` (User ref), `song` (Song ref), `listenDuration`, `playedAt`.
+   - Recorded automatically on validated play events (>= 30s playback).
+   - Chronological timeline (`playedAt: -1`) with relative time tags ("Just now", "10m ago", etc.).
+   - History privacy: Strictly isolated per user. Other users cannot inspect listening history.
+   - Endpoints:
+     - `GET /api/users/me/history` — Paginated chronological listening history.
+     - `DELETE /api/users/me/history` — Clear personal listening history.
+
+5. **Rule-Based Personalized Discovery & Fallback**:
+   - Deterministic multi-factor scoring algorithm:
+     - **Followed Artist Boost**: +50 points if track belongs to an artist the user follows.
+     - **Preferred Genre Match**: +30 points for user's primary favorite genre, +15 points for secondary genre (derived from likes and listening history).
+     - **Popularity Factor**: Scaled up to +20 points based on total streams.
+     - **Recency Bonus**: +10 points for tracks released within the last 30 days.
+     - **Freshness Bonus**: +15 points for tracks not yet listened to by this user.
+   - **Discovery Fallback for New Users & Guests**:
+     - Automatically falls back to top trending published tracks across diverse genres when user has no history or is not logged in.
+   - Endpoints:
+     - `GET /api/songs/discovery/personalized` — Returns personalized or fallback discovery feed.
+
+---
+
 ## 🧪 Testing Results
 
-All 30 automated integration and unit tests passing:
+All 55 automated integration and unit tests passing across all three parts:
 
 ```
-▶ SunteRaho Authentication & Profile API Tests
-  ✔ GET /api/health should return 200 and healthy status
-  ✔ POST /api/auth/register should fail when required fields are missing
-  ✔ POST /api/auth/register should fail when password is less than 6 chars
-  ✔ POST /api/auth/register should successfully register a Listener and set auth cookie
-  ✔ POST /api/auth/register should fail on duplicate email or username
-  ✔ POST /api/auth/register should successfully register an Artist with artistProfile
-  ✔ POST /api/auth/login should fail with invalid credentials
-  ✔ POST /api/auth/login should succeed with valid credentials and return user
-  ✔ GET /api/auth/me should reject unauthenticated request with 401
-  ✔ GET /api/auth/me should return current user when authenticated via cookie
-  ✔ PUT /api/users/profile should update user profile
-  ✔ PUT /api/users/profile should update artist profile details for artist
-  ✔ GET /api/users/artists should list artists
-  ✔ POST /api/auth/logout should clear the token cookie
-✔ SunteRaho Authentication & Profile API Tests (14 passed)
+▶ SunteRaho Authentication & Profile API Tests (14 passed)
+▶ SoundSphere Part 3: Following, Likes, Playlists, History & Discovery Tests
+  ▶ Follow System & Counts (6 passed)
+  ▶ Like System & Liked Songs (5 passed)
+  ▶ Playlists: CRUD, Ownership, Privacy & Ordering (9 passed)
+  ▶ Listening History & Privacy (3 passed)
+  ▶ Rule-Based Personalized Discovery & Fallback (2 passed)
+✔ SoundSphere Part 3 Tests (25 passed)
+▶ SunteRaho Music Catalogue, Media Uploads & Player API Tests (16 passed)
 
-▶ SunteRaho Music Catalogue, Media Uploads & Player API Tests
-  ✔ POST /api/songs should reject unauthenticated requests with 401
-  ✔ POST /api/songs should reject listener accounts with 403 Forbidden
-  ✔ POST /api/songs should fail if title or genre is missing
-  ✔ POST /api/songs should allow artist to create a published track
-  ✔ POST /api/songs should allow artist to create an unpublished draft track
-  ✔ GET /api/songs should return only published tracks in public catalogue
-  ✔ GET /api/songs search query and genre filtering
-  ✔ GET /api/songs/:id public access to unpublished track should return 404
-  ✔ GET /api/songs/:id owner artist access to unpublished track should succeed
-  ✔ PUT /api/songs/:id should prevent Artist B from updating Artist A track (ownership check)
-  ✔ PUT /api/songs/:id should allow owner artist to update track metadata
-  ✔ GET /api/songs/artist/my-tracks should return all songs of current artist
-  ✔ POST /api/songs/:id/play should enforce listening threshold
-  ✔ POST /api/songs/:id/play should deduplicate rapid plays within cooldown window
-  ✔ DELETE /api/songs/:id should prevent non-owner from deleting
-  ✔ DELETE /api/songs/:id should allow owner artist to delete their track
-✔ SunteRaho Music Catalogue, Media Uploads & Player API Tests (16 passed)
-
-Total: 30 tests, 0 failures.
+Total: 55 tests, 0 failures.
 ```
+

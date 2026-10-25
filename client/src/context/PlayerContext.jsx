@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { resolveMediaUrl, recordPlayApi } from '../services/api';
+import { resolveMediaUrl, recordPlayApi, getLikedSongIdsApi, toggleLikeApi } from '../services/api';
+import { useAuth } from './AuthContext';
 
 const PlayerContext = createContext(null);
 
 export const PlayerProvider = ({ children }) => {
+  const { user } = useAuth();
   const audioRef = useRef(new Audio());
   
   const [currentSong, setCurrentSong] = useState(null);
@@ -22,6 +24,22 @@ export const PlayerProvider = ({ children }) => {
   const [isBuffering, setIsBuffering] = useState(false);
   const [playerError, setPlayerError] = useState(null);
   const [isQueueOpen, setIsQueueOpen] = useState(false);
+  const [likedSongIds, setLikedSongIds] = useState(new Set());
+
+  // Fetch user's liked song IDs when logged in
+  useEffect(() => {
+    if (user) {
+      getLikedSongIdsApi()
+        .then((res) => {
+          if (res.data?.success && Array.isArray(res.data.songIds)) {
+            setLikedSongIds(new Set(res.data.songIds));
+          }
+        })
+        .catch((err) => console.warn('Could not fetch liked song IDs:', err.message));
+    } else {
+      setLikedSongIds(new Set());
+    }
+  }, [user]);
 
   // Play Event Listening Threshold Tracking
   const listenAccumulatorRef = useRef(0);
@@ -279,6 +297,56 @@ export const PlayerProvider = ({ children }) => {
     setQueueIndex(currentSong ? 0 : -1);
   };
 
+  const toggleLikeTrack = async (songId) => {
+    if (!user) {
+      return { success: false, requireAuth: true };
+    }
+    const songIdStr = songId.toString();
+    const wasLiked = likedSongIds.has(songIdStr);
+
+    // Optimistic UI update
+    setLikedSongIds((prev) => {
+      const next = new Set(prev);
+      if (wasLiked) next.delete(songIdStr);
+      else next.add(songIdStr);
+      return next;
+    });
+
+    try {
+      const res = await toggleLikeApi(songIdStr);
+      if (res.data?.success) {
+        setLikedSongIds((prev) => {
+          const next = new Set(prev);
+          if (res.data.isLiked) next.add(songIdStr);
+          else next.delete(songIdStr);
+          return next;
+        });
+        return { success: true, isLiked: res.data.isLiked, likesCount: res.data.likesCount };
+      }
+      return { success: false };
+    } catch (err) {
+      // Rollback on error
+      setLikedSongIds((prev) => {
+        const next = new Set(prev);
+        if (wasLiked) next.add(songIdStr);
+        else next.delete(songIdStr);
+        return next;
+      });
+      return { success: false, message: err.message };
+    }
+  };
+
+  const isSongLiked = (songId) => {
+    if (!songId) return false;
+    return likedSongIds.has(songId.toString());
+  };
+
+  const playPlaylist = (songs, startIndex = 0) => {
+    if (!songs || songs.length === 0) return;
+    const startTrack = songs[startIndex] || songs[0];
+    playSong(startTrack, songs);
+  };
+
   const value = {
     currentSong,
     isPlaying,
@@ -293,6 +361,10 @@ export const PlayerProvider = ({ children }) => {
     isBuffering,
     playerError,
     isQueueOpen,
+    likedSongIds,
+    isSongLiked,
+    toggleLikeTrack,
+    playPlaylist,
     playSong,
     togglePlay,
     seek,

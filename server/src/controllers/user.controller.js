@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import History from '../models/history.model.js';
 
 /**
  * Get user/artist public profile by ID or username
@@ -112,6 +113,64 @@ export const listArtists = async (req, res, next) => {
         page: parseInt(page, 10),
         pages: Math.ceil(total / parseInt(limit, 10)),
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get current user's listening history (Private to owner)
+ * GET /api/users/me/history
+ */
+export const getListeningHistory = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit, 10) || 20));
+    const skip = (pageNum - 1) * limitNum;
+
+    const [historyItems, total] = await Promise.all([
+      History.find({ user: userId })
+        .populate({
+          path: 'song',
+          populate: { path: 'artist', select: 'name username avatar artistProfile' },
+        })
+        .sort({ playedAt: -1 })
+        .skip(skip)
+        .limit(limitNum),
+      History.countDocuments({ user: userId }),
+    ]);
+
+    // Filter out deleted songs if any
+    const validHistory = historyItems.filter((item) => item.song != null);
+
+    return res.status(200).json({
+      success: true,
+      history: validHistory,
+      pagination: {
+        total,
+        page: pageNum,
+        pages: Math.ceil(total / limitNum) || 1,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Clear current user's listening history
+ * DELETE /api/users/me/history
+ */
+export const clearListeningHistory = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    await History.deleteMany({ user: userId });
+    return res.status(200).json({
+      success: true,
+      message: 'Listening history cleared successfully.',
     });
   } catch (error) {
     next(error);
