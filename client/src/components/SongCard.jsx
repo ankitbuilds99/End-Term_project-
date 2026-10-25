@@ -55,36 +55,38 @@ const SongCard = ({ song, playlist = null }) => {
   return (
     <>
       <div
-        className="glass-card"
+        className="geometric-card"
         onClick={handlePlayClick}
         style={{
-          padding: '16px',
-          borderRadius: '16px',
+          padding: '14px',
+          borderRadius: '0px',
           cursor: 'pointer',
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s',
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
+          transition: 'border-color 0.15s ease, background-color 0.15s ease',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-4px)';
+          e.currentTarget.style.borderColor = 'var(--border-medium)';
           e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.backgroundColor = 'var(--glass-bg)';
+          e.currentTarget.style.borderColor = 'var(--border-subtle)';
+          e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
         }}
       >
-        {/* Artwork Container with Overlay Play Button */}
+        {/* Square Artwork Container with No Rounded Corners */}
         <div style={{
           position: 'relative',
           width: '100%',
           paddingTop: '100%', // 1:1 Aspect ratio
-          borderRadius: '12px',
+          borderRadius: '0px',
           overflow: 'hidden',
-          marginBottom: '14px',
-          backgroundColor: 'var(--bg-deep)',
-          boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
+          marginBottom: '12px',
+          backgroundColor: '#000',
+          border: '1px solid var(--border-subtle)',
         }}>
           <img
             src={artwork}
@@ -96,11 +98,12 @@ const SongCard = ({ song, playlist = null }) => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              borderRadius: '0px',
             }}
             loading="lazy"
           />
 
-          {/* Quick Heart on artwork top-right */}
+          {/* Quick Heart on artwork top-right - Sharp Square */}
           <button
             onClick={handleLikeClick}
             title={isLiked ? 'Unlike song' : 'Like song'}
@@ -108,57 +111,54 @@ const SongCard = ({ song, playlist = null }) => {
               position: 'absolute',
               top: '8px',
               right: '8px',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              backdropFilter: 'blur(4px)',
-              border: 'none',
+              width: '30px',
+              height: '30px',
+              borderRadius: '0px',
+              backgroundColor: 'rgba(8, 9, 11, 0.85)',
+              border: '1px solid var(--border-subtle)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: isLiked ? '#ff3366' : '#fff',
-              transition: 'transform 0.15s, background-color 0.2s',
+              transition: 'background-color 0.15s',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.15)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            <Heart size={16} fill={isLiked ? '#ff3366' : 'none'} />
+            <Heart size={15} fill={isLiked ? '#ff3366' : 'none'} />
           </button>
 
-          {/* Hover / Active Play Button Overlay */}
-          <div style={{
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            width: '46px',
-            height: '46px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--accent-primary)',
-            color: '#000',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.6)',
-            transform: isCurrentSong ? 'scale(1)' : 'translateY(8px)',
-            opacity: isCurrentSong ? 1 : 0.9,
-            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-          className="card-play-btn"
+          {/* Play / Pause Button Overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '8px',
+              right: '8px',
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--accent-primary)',
+              color: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+              opacity: isCurrentSong ? 1 : 0.95,
+              transition: 'transform 0.15s ease',
+            }}
+            className="card-play-btn"
           >
             {isCurrentSong && isPlaying ? (
-              <Pause size={22} fill="#000" color="#000" />
+              <Pause size={20} fill="#000" color="#000" />
             ) : (
-              <Play size={22} fill="#000" color="#000" style={{ marginLeft: '3px' }} />
+              <Play size={20} fill="#000" color="#000" style={{ marginLeft: '2px' }} />
             )}
           </div>
         </div>
 
         {/* Track Info */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1 }}>
           <h4 style={{
-            fontSize: '0.98rem',
+            fontSize: '0.94rem',
             fontWeight: 700,
             color: isCurrentSong ? 'var(--accent-primary)' : '#fff',
             whiteSpace: 'nowrap',
@@ -170,7 +170,7 @@ const SongCard = ({ song, playlist = null }) => {
           </h4>
 
           <p style={{
-            fontSize: '0.82rem',
+            fontSize: '0.80rem',
             color: 'var(--text-muted)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -184,24 +184,28 @@ const SongCard = ({ song, playlist = null }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginTop: '10px',
+            marginTop: '8px',
             paddingTop: '8px',
             borderTop: '1px solid var(--border-subtle)',
-            fontSize: '0.74rem',
+            fontSize: '0.72rem',
             color: 'var(--text-dim)',
           }}>
             <span style={{
-              padding: '2px 8px',
-              borderRadius: '9999px',
+              padding: '2px 6px',
+              borderRadius: '0px',
               backgroundColor: 'var(--bg-deep)',
+              border: '1px solid var(--border-subtle)',
               color: 'var(--text-muted)',
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: '0.68rem',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
             }}>
               {song.genre}
             </span>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>{formatTime(song.duration)}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '0.72rem' }}>{formatTime(song.duration)}</span>
 
               {/* Add to Playlist button */}
               <button
@@ -210,13 +214,13 @@ const SongCard = ({ song, playlist = null }) => {
                 style={{
                   color: 'var(--text-dim)',
                   padding: '4px',
-                  borderRadius: '6px',
+                  borderRadius: '0px',
                   display: 'flex',
                   alignItems: 'center',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  transition: 'color 0.2s',
+                  transition: 'color 0.15s',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'var(--accent-primary)';
@@ -225,7 +229,7 @@ const SongCard = ({ song, playlist = null }) => {
                   e.currentTarget.style.color = 'var(--text-dim)';
                 }}
               >
-                <FolderPlus size={16} />
+                <FolderPlus size={15} />
               </button>
 
               {/* Add to Queue button */}
@@ -235,13 +239,13 @@ const SongCard = ({ song, playlist = null }) => {
                 style={{
                   color: 'var(--text-dim)',
                   padding: '4px',
-                  borderRadius: '6px',
+                  borderRadius: '0px',
                   display: 'flex',
                   alignItems: 'center',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  transition: 'color 0.2s',
+                  transition: 'color 0.15s',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'var(--accent-primary)';
@@ -250,7 +254,7 @@ const SongCard = ({ song, playlist = null }) => {
                   e.currentTarget.style.color = 'var(--text-dim)';
                 }}
               >
-                <ListPlus size={16} />
+                <ListPlus size={15} />
               </button>
             </div>
           </div>

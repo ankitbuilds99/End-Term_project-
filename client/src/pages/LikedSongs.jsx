@@ -74,28 +74,27 @@ const LikedSongs = () => {
       {/* Hero Header Banner */}
       <div
         style={{
-          borderRadius: '24px',
+          borderRadius: '0px',
           padding: '36px',
           marginBottom: '32px',
-          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(99, 102, 241, 0.2) 60%, rgba(10, 11, 14, 0.9) 100%)',
-          border: '1px solid rgba(236, 72, 153, 0.2)',
+          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(99, 102, 241, 0.15) 60%, rgba(10, 11, 14, 0.95) 100%)',
+          border: '1px solid rgba(236, 72, 153, 0.25)',
           display: 'flex',
           alignItems: 'center',
           gap: '28px',
           flexWrap: 'wrap',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
         }}
       >
         <div
           style={{
             width: '140px',
             height: '140px',
-            borderRadius: '20px',
+            borderRadius: '0px',
             background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 12px 30px rgba(236, 72, 153, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             flexShrink: 0,
           }}
         >
@@ -131,7 +130,7 @@ const LikedSongs = () => {
             gap: '8px',
             padding: '12px 28px',
             fontSize: '1rem',
-            borderRadius: '9999px',
+            borderRadius: '0px',
           }}
         >
           <Play size={20} fill="#000" />
@@ -145,18 +144,18 @@ const LikedSongs = () => {
           <Loader2 size={36} className="spin" color="var(--accent-primary)" />
         </div>
       ) : songs.length === 0 ? (
-        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '20px' }}>
+        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '0px' }}>
           <Heart size={48} color="var(--text-dim)" style={{ margin: '0 auto 16px' }} />
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>No liked songs yet</h3>
           <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
             Explore tracks from our catalogue and tap the heart icon to save them here.
           </p>
-          <Link to="/catalogue" className="btn-primary">
+          <Link to="/catalogue" className="btn-primary" style={{ borderRadius: '0px' }}>
             Browse Catalogue
           </Link>
         </div>
       ) : (
-        <div className="glass-card" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+        <div className="glass-card" style={{ borderRadius: '0px', overflow: 'hidden' }}>
           {/* Header Row */}
           <div
             style={{
@@ -224,8 +223,9 @@ const LikedSongs = () => {
                     style={{
                       width: '42px',
                       height: '42px',
-                      borderRadius: '8px',
+                      borderRadius: '0px',
                       objectFit: 'cover',
+                      border: '1px solid var(--border-subtle)',
                       backgroundColor: 'var(--bg-deep)',
                     }}
                   />
@@ -267,7 +267,7 @@ const LikedSongs = () => {
                       cursor: 'pointer',
                       color: '#f43f5e',
                       padding: '6px',
-                      borderRadius: '50%',
+                      borderRadius: '0px',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',

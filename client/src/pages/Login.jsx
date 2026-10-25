@@ -55,13 +55,13 @@ const Login = () => {
           <div style={{
             width: '48px',
             height: '48px',
-            borderRadius: '14px',
+            borderRadius: '0px',
             background: 'var(--accent-gradient)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '16px',
-            boxShadow: '0 6px 16px var(--accent-glow)'
+            border: '1px solid var(--accent-border)'
           }}>
             <Radio size={26} color="#000" strokeWidth={2.5} />
           </div>
@@ -77,7 +77,7 @@ const Login = () => {
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.03)',
           border: '1px solid var(--border-subtle)',
-          borderRadius: '12px',
+          borderRadius: '0px',
           padding: '12px 14px',
           marginBottom: '24px',
         }}>
@@ -93,10 +93,10 @@ const Login = () => {
               }}
               style={{
                 flex: 1,
-                padding: '6px 10px',
-                borderRadius: '8px',
+                padding: '8px 10px',
+                borderRadius: '0px',
                 backgroundColor: 'rgba(255, 65, 108, 0.12)',
-                border: '1px solid rgba(255, 65, 108, 0.25)',
+                border: '1px solid rgba(255, 65, 108, 0.3)',
                 color: '#ff6b81',
                 fontSize: '0.78rem',
                 fontWeight: 700,
@@ -113,10 +113,10 @@ const Login = () => {
               }}
               style={{
                 flex: 1,
-                padding: '6px 10px',
-                borderRadius: '8px',
+                padding: '8px 10px',
+                borderRadius: '0px',
                 backgroundColor: 'rgba(30, 215, 96, 0.12)',
-                border: '1px solid rgba(30, 215, 96, 0.25)',
+                border: '1px solid rgba(30, 215, 96, 0.3)',
                 color: 'var(--accent-primary)',
                 fontSize: '0.78rem',
                 fontWeight: 700,

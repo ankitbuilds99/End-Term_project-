@@ -115,13 +115,13 @@ const Register = () => {
           <div style={{
             width: '48px',
             height: '48px',
-            borderRadius: '14px',
+            borderRadius: '0px',
             background: 'var(--accent-gradient)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '16px',
-            boxShadow: '0 6px 16px var(--accent-glow)'
+            border: '1px solid var(--accent-border)'
           }}>
             <Radio size={26} color="#000" strokeWidth={2.5} />
           </div>
@@ -145,7 +145,7 @@ const Register = () => {
             onClick={() => setRole('listener')}
             style={{
               padding: '16px',
-              borderRadius: '14px',
+              borderRadius: '0px',
               border: role === 'listener' ? '2px solid var(--accent-primary)' : '1px solid var(--border-subtle)',
               backgroundColor: role === 'listener' ? 'rgba(30, 215, 96, 0.08)' : 'var(--bg-deep)',
               display: 'flex',
@@ -153,7 +153,7 @@ const Register = () => {
               alignItems: 'center',
               gap: '8px',
               textAlign: 'center',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.15s ease',
             }}
           >
             <Headphones size={24} color={role === 'listener' ? 'var(--accent-primary)' : 'var(--text-dim)'} />
@@ -170,7 +170,7 @@ const Register = () => {
             onClick={() => setRole('artist')}
             style={{
               padding: '16px',
-              borderRadius: '14px',
+              borderRadius: '0px',
               border: role === 'artist' ? '2px solid #ff6b81' : '1px solid var(--border-subtle)',
               backgroundColor: role === 'artist' ? 'rgba(255, 65, 108, 0.08)' : 'var(--bg-deep)',
               display: 'flex',
@@ -178,7 +178,7 @@ const Register = () => {
               alignItems: 'center',
               gap: '8px',
               textAlign: 'center',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.15s ease',
             }}
           >
             <Mic2 size={24} color={role === 'artist' ? '#ff6b81' : 'var(--text-dim)'} />
@@ -279,13 +279,13 @@ const Register = () => {
             <div style={{
               margin: '20px 0',
               padding: '20px',
-              borderRadius: '14px',
+              borderRadius: '0px',
               backgroundColor: 'rgba(255, 65, 108, 0.05)',
-              border: '1px solid rgba(255, 65, 108, 0.2)',
+              border: '1px solid rgba(255, 65, 108, 0.3)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                 <Sparkles size={18} color="#ff6b81" />
-                <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: '#ff6b81' }}>
+                <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: '#ff6b81', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Artist Profile Setup
                 </h3>
               </div>
@@ -319,9 +319,9 @@ const Register = () => {
                         onClick={() => toggleGenre(genre)}
                         style={{
                           fontSize: '0.78rem',
-                          fontWeight: 600,
+                          fontWeight: 700,
                           padding: '6px 12px',
-                          borderRadius: '9999px',
+                          borderRadius: '0px',
                           border: isSelected ? '1px solid #ff6b81' : '1px solid var(--border-subtle)',
                           backgroundColor: isSelected ? 'rgba(255, 65, 108, 0.2)' : 'var(--bg-deep)',
                           color: isSelected ? '#fff' : 'var(--text-muted)',

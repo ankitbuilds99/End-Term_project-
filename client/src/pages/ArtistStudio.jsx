@@ -309,9 +309,9 @@ const ArtistStudio = () => {
         marginBottom: '32px',
       }}>
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '9999px', background: 'rgba(255, 65, 108, 0.12)', border: '1px solid rgba(255, 65, 108, 0.3)', marginBottom: '14px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '0px', background: 'rgba(255, 65, 108, 0.12)', border: '1px solid rgba(255, 65, 108, 0.4)', marginBottom: '14px' }}>
             <Sparkles size={14} color="#ff6b81" />
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ff6b81', letterSpacing: '0.04em' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ff6b81', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
               Creator Studio
             </span>
           </div>
@@ -328,7 +328,7 @@ const ArtistStudio = () => {
           className="btn-primary"
           style={{
             background: 'var(--artist-gradient)',
-            boxShadow: '0 4px 14px rgba(255, 65, 108, 0.4)',
+            borderRadius: '0px',
           }}
         >
           <Plus size={18} />
@@ -402,8 +402,8 @@ const ArtistStudio = () => {
               </p>
             </div>
 
-            {/* Timeframe Selector Pills */}
-            <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--bg-deep)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+            {/* Timeframe Selector Pills -> Sharp Geometric Tabs */}
+            <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--bg-deep)', padding: '4px', borderRadius: '0px', border: '1px solid var(--border-subtle)' }}>
               {[
                 { label: 'All Time', value: 'all' },
                 { label: 'Last 30 Days', value: '30d' },
@@ -414,14 +414,14 @@ const ArtistStudio = () => {
                   onClick={() => setAnalyticsTimeframe(tf.value)}
                   style={{
                     padding: '8px 18px',
-                    borderRadius: '8px',
+                    borderRadius: '0px',
                     border: 'none',
                     backgroundColor: analyticsTimeframe === tf.value ? '#ff4757' : 'transparent',
                     color: analyticsTimeframe === tf.value ? '#fff' : 'var(--text-muted)',
                     fontWeight: 700,
                     fontSize: '0.84rem',
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.15s',
                   }}
                 >
                   {tf.label}
@@ -518,7 +518,7 @@ const ArtistStudio = () => {
               </div>
 
               {/* Streams Activity Timeline Chart */}
-              <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+              <div className="glass-card" style={{ padding: '24px', borderRadius: '0px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                   <div>
                     <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff' }}>Streams Activity Timeline</h3>
@@ -560,7 +560,7 @@ const ArtistStudio = () => {
                                 width: '100%',
                                 maxWidth: '28px',
                                 height: `${heightPct}%`,
-                                borderRadius: '6px 6px 0 0',
+                                borderRadius: '0px',
                                 background: 'linear-gradient(180deg, var(--accent-primary) 0%, rgba(6, 182, 212, 0.4) 100%)',
                                 transition: 'all 0.3s ease',
                                 cursor: 'pointer',
@@ -578,7 +578,7 @@ const ArtistStudio = () => {
               </div>
 
               {/* Top Performing Tracks */}
-              <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+              <div className="glass-card" style={{ padding: '24px', borderRadius: '0px' }}>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>
                   Top Performing Tracks ({analyticsTimeframe === 'all' ? 'All Time' : analyticsTimeframe})
                 </h3>
@@ -603,8 +603,9 @@ const ArtistStudio = () => {
                             gridTemplateColumns: '40px 1fr 140px 100px 80px',
                             alignItems: 'center',
                             padding: '12px 16px',
-                            borderRadius: '10px',
+                            borderRadius: '0px',
                             backgroundColor: isCurrent ? 'var(--bg-surface-elevated)' : 'var(--bg-surface)',
+                            border: '1px solid var(--border-subtle)',
                             cursor: 'pointer',
                             transition: 'background-color 0.15s ease',
                           }}
@@ -617,7 +618,7 @@ const ArtistStudio = () => {
                             <img
                               src={resolveMediaUrl(track.artworkUrl)}
                               alt={track.title}
-                              style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }}
+                              style={{ width: '40px', height: '40px', borderRadius: '0px', objectFit: 'cover' }}
                             />
                             <div style={{ minWidth: 0, overflow: 'hidden' }}>
                               <p style={{ fontSize: '0.92rem', fontWeight: 700, color: isCurrent ? 'var(--accent-primary)' : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -637,7 +638,7 @@ const ArtistStudio = () => {
                             {formatPlays(track.playsCount)}
                           </span>
 
-                          <span style={{ fontSize: '0.72rem', padding: '3px 8px', borderRadius: '9999px', textAlign: 'center', backgroundColor: track.isPublished ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255, 255, 255, 0.05)', color: track.isPublished ? '#4ade80' : 'var(--text-dim)' }}>
+                          <span style={{ fontSize: '0.72rem', padding: '3px 8px', borderRadius: '0px', textAlign: 'center', backgroundColor: track.isPublished ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255, 255, 255, 0.05)', color: track.isPublished ? '#4ade80' : 'var(--text-dim)', border: track.isPublished ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid var(--border-subtle)' }}>
                             {track.isPublished ? 'Live' : 'Draft'}
                           </span>
                         </div>
@@ -649,7 +650,7 @@ const ArtistStudio = () => {
 
               {/* Genre Distribution in Catalog */}
               {analyticsData?.genreDistribution && Object.keys(analyticsData.genreDistribution).length > 0 && (
-                <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
+                <div className="glass-card" style={{ padding: '24px', borderRadius: '0px' }}>
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '14px' }}>
                     Catalog Soundscape
                   </h3>
@@ -662,14 +663,14 @@ const ArtistStudio = () => {
                           alignItems: 'center',
                           gap: '8px',
                           padding: '8px 16px',
-                          borderRadius: '10px',
+                          borderRadius: '0px',
                           backgroundColor: 'var(--bg-surface)',
                           border: '1px solid var(--border-subtle)',
                         }}
                       >
                         <Disc size={16} color="var(--accent-primary)" />
                         <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#fff' }}>{genre}</span>
-                        <span style={{ fontSize: '0.76rem', padding: '2px 8px', borderRadius: '9999px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)', fontWeight: 700 }}>
+                        <span style={{ fontSize: '0.76rem', padding: '2px 8px', borderRadius: '0px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)', fontWeight: 700, border: '1px solid var(--border-subtle)' }}>
                           {count} {count === 1 ? 'track' : 'tracks'}
                         </span>
                       </div>
@@ -767,7 +768,8 @@ const ArtistStudio = () => {
                               style={{
                                 width: '38px',
                                 height: '38px',
-                                borderRadius: '8px',
+                                borderRadius: '0px',
+                                border: '1px solid var(--border-subtle)',
                                 backgroundColor: 'rgba(255, 255, 255, 0.08)',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -782,7 +784,7 @@ const ArtistStudio = () => {
                             <img
                               src={resolveMediaUrl(track.artworkUrl)}
                               alt={track.title}
-                              style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover' }}
+                              style={{ width: '42px', height: '42px', borderRadius: '0px', objectFit: 'cover', border: '1px solid var(--border-subtle)' }}
                             />
 
                             <div>
@@ -798,7 +800,7 @@ const ArtistStudio = () => {
 
                         {/* Genre */}
                         <td style={{ padding: '14px 16px' }}>
-                          <span style={{ fontSize: '0.76rem', padding: '3px 10px', borderRadius: '9999px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)' }}>
+                          <span style={{ fontSize: '0.76rem', padding: '3px 10px', borderRadius: '0px', backgroundColor: 'var(--bg-deep)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}>
                             {track.genre}
                           </span>
                         </td>
@@ -822,7 +824,7 @@ const ArtistStudio = () => {
                               fontSize: '0.72rem',
                               fontWeight: 700,
                               padding: '4px 10px',
-                              borderRadius: '9999px',
+                              borderRadius: '0px',
                               border: track.isPublished ? '1px solid rgba(30, 215, 96, 0.4)' : '1px solid var(--border-subtle)',
                               backgroundColor: track.isPublished ? 'rgba(30, 215, 96, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                               color: track.isPublished ? '#22e668' : 'var(--text-dim)',
@@ -846,7 +848,8 @@ const ArtistStudio = () => {
                               style={{
                                 padding: '6px',
                                 color: 'var(--text-muted)',
-                                borderRadius: '6px',
+                                borderRadius: '0px',
+                                border: '1px solid var(--border-subtle)',
                                 transition: 'color 0.2s',
                               }}
                               onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
@@ -861,7 +864,8 @@ const ArtistStudio = () => {
                               style={{
                                 padding: '6px',
                                 color: 'var(--text-dim)',
-                                borderRadius: '6px',
+                                borderRadius: '0px',
+                                border: '1px solid var(--border-subtle)',
                                 transition: 'color 0.2s',
                               }}
                               onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--error-text)')}
@@ -1017,7 +1021,7 @@ const ArtistStudio = () => {
                 justifyContent: 'space-between',
                 padding: '14px 16px',
                 backgroundColor: 'var(--bg-deep)',
-                borderRadius: '10px',
+                borderRadius: '0px',
                 marginBottom: '24px',
                 border: '1px solid var(--border-subtle)',
               }}>
@@ -1154,15 +1158,16 @@ const ArtistStudio = () => {
                 justifyContent: 'space-between',
                 padding: '12px 16px',
                 backgroundColor: 'var(--bg-deep)',
-                borderRadius: '10px',
+                borderRadius: '0px',
                 marginBottom: '24px',
+                border: '1px solid var(--border-subtle)',
               }}>
                 <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Public Visibility</span>
                 <button
                   type="button"
                   onClick={() => setEditIsPublished(!editIsPublished)}
                   className={editIsPublished ? 'btn-primary' : 'btn-secondary'}
-                  style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+                  style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '0px' }}
                 >
                   {editIsPublished ? 'Published' : 'Draft / Private'}
                 </button>

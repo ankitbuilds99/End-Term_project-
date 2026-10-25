@@ -1,19 +1,21 @@
 :root {
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Color Palette */
-  --bg-black: #0b0c10;
-  --bg-deep: #121318;
-  --bg-surface: #181a20;
-  --bg-surface-elevated: #22252e;
-  --bg-surface-hover: #2a2e39;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.15);
+  /* Color Palette - Preserved Obsidian & Spotify Accent */
+  --bg-black: #08090b;
+  --bg-deep: #0f1015;
+  --bg-surface: #14161d;
+  --bg-surface-elevated: #1b1e28;
+  --bg-surface-hover: #232734;
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-medium: rgba(255, 255, 255, 0.20);
+  --border-strong: rgba(255, 255, 255, 0.35);
   
-  /* Spotify Vibrant Accents */
+  /* Vibrant Accents */
   --accent-primary: #1ed760;
   --accent-hover: #22e668;
-  --accent-glow: rgba(30, 215, 96, 0.25);
+  --accent-glow: rgba(30, 215, 96, 0.20);
+  --accent-border: rgba(30, 215, 96, 0.45);
   --accent-gradient: linear-gradient(135deg, #1ed760 0%, #159c44 100%);
   --artist-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
   --artist-badge: #ff4757;
@@ -25,22 +27,20 @@
   
   /* Status Colors */
   --error-bg: rgba(255, 75, 75, 0.12);
-  --error-border: rgba(255, 75, 75, 0.35);
+  --error-border: rgba(255, 75, 75, 0.4);
   --error-text: #ff6b6b;
   --success-bg: rgba(30, 215, 96, 0.12);
-  --success-border: rgba(30, 215, 96, 0.35);
+  --success-border: rgba(30, 215, 96, 0.4);
   --success-text: #22e668;
 
   /* Layout dimensions */
   --sidebar-width: 250px;
   --navbar-height: 68px;
   
-  /* Shadows & Glassmorphism */
-  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-elevated: 0 16px 40px rgba(0, 0, 0, 0.65);
-  --glass-bg: rgba(24, 26, 32, 0.85);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-  --blur-standard: blur(14px);
+  /* Geometry & Borders: Default radius 0px across system */
+  --radius-default: 0px;
+  --glass-bg: rgba(20, 22, 29, 0.92);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 * {
@@ -59,20 +59,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom modern scrollbars */
+/* Custom sharp scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-black);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--bg-surface-elevated);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-surface-hover);
+  background: var(--border-medium);
 }
 
 a {
@@ -86,10 +86,12 @@ button {
   border: none;
   background: none;
   outline: none;
+  border-radius: 0px;
 }
 
 input, textarea, select {
   font-family: inherit;
+  border-radius: 0px;
 }
 
 /* App layout wrapper */
@@ -120,60 +122,83 @@ input, textarea, select {
   }
   .mobile-bottom-nav {
     display: flex !important;
+    border-radius: 0px !important;
   }
   .app-audio-player {
     bottom: 64px !important;
     padding: 0 12px !important;
     height: 72px !important;
+    border-radius: 0px !important;
   }
 }
 
-/* Reusable Glass Card */
+.content-viewport {
+  flex: 1;
+  padding: 24px 32px 64px 32px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* COMET-Style Sharp Architectural Glass Card */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: var(--blur-standard);
+  backdrop-filter: blur(12px);
   border: var(--glass-border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 0px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .glass-card:hover {
   border-color: var(--border-medium);
 }
 
-/* Primary Button */
+/* Geometric Card Component */
+.geometric-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0px !important;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.geometric-card:hover {
+  border-color: var(--border-medium);
+}
+
+/* Primary Button (Sharp Rectangular) */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--accent-gradient);
+  background: var(--accent-primary);
   color: #000;
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 12px 24px;
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 14px var(--accent-glow);
+  font-size: 0.90rem;
+  letter-spacing: 0.02em;
+  padding: 10px 22px;
+  border-radius: 0px !important;
+  border: 1px solid var(--accent-primary);
+  transition: all 0.15s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: scale(1.03);
-  box-shadow: 0 6px 20px rgba(30, 215, 96, 0.4);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .btn-primary:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: translateY(1px);
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-/* Secondary Button */
+/* Secondary Button (Sharp Rectangular) */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -182,17 +207,16 @@ input, textarea, select {
   background: var(--bg-surface-elevated);
   color: var(--text-main);
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 12px 22px;
-  border-radius: 9999px;
+  font-size: 0.90rem;
+  padding: 10px 20px;
+  border-radius: 0px !important;
   border: 1px solid var(--border-subtle);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: var(--bg-surface-hover);
   border-color: var(--border-medium);
-  transform: translateY(-1px);
 }
 
 .btn-outline {
@@ -203,19 +227,20 @@ input, textarea, select {
   background: transparent;
   color: var(--text-main);
   font-weight: 600;
-  font-size: 0.9rem;
-  padding: 8px 18px;
-  border-radius: 9999px;
+  font-size: 0.88rem;
+  padding: 8px 16px;
+  border-radius: 0px !important;
   border: 1px solid var(--border-medium);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-outline:hover {
-  border-color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(30, 215, 96, 0.04);
 }
 
-/* Form Styles */
+/* Form Styles - Geometric & Sharp */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -224,9 +249,11 @@ input, textarea, select {
 }
 
 .form-label {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -237,17 +264,16 @@ input, textarea, select {
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   color: var(--text-main);
-  padding: 13px 16px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  padding: 12px 14px;
+  border-radius: 0px !important;
+  font-size: 0.92rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--accent-primary);
   background: var(--bg-surface);
-  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .form-input::placeholder {
@@ -258,9 +284,9 @@ input, textarea, select {
   background: var(--error-bg);
   border: 1px solid var(--error-border);
   color: var(--error-text);
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  border-radius: 0px !important;
+  font-size: 0.88rem;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -271,51 +297,52 @@ input, textarea, select {
   background: var(--success-bg);
   border: 1px solid var(--success-border);
   color: var(--success-text);
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  border-radius: 0px !important;
+  font-size: 0.88rem;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Role Badges */
+/* Sharp Role Badges */
 .badge-role {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 9999px;
+  padding: 3px 8px;
+  border-radius: 0px !important;
 }
 
 .badge-role.artist {
-  background: rgba(255, 65, 108, 0.18);
+  background: rgba(255, 65, 108, 0.15);
   color: #ff6b81;
-  border: 1px solid rgba(255, 65, 108, 0.35);
+  border: 1px solid rgba(255, 65, 108, 0.4);
 }
 
 .badge-role.listener {
-  background: var(--accent-glow);
+  background: rgba(30, 215, 96, 0.15);
   color: var(--accent-primary);
-  border: 1px solid rgba(30, 215, 96, 0.35);
+  border: 1px solid rgba(30, 215, 96, 0.4);
 }
 
 .badge-role.admin {
-  background: rgba(168, 85, 247, 0.2);
+  background: rgba(168, 85, 247, 0.18);
   color: #c084fc;
   border: 1px solid rgba(168, 85, 247, 0.4);
 }
 
-/* Pulse animation */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+/* Architectural Grid Pattern (Subtle Background Option) */
+.architectural-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 @keyframes spin {
@@ -323,8 +350,8 @@ input, textarea, select {
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   border-top-color: #000;
   border-radius: 50%;
@@ -332,8 +359,8 @@ input, textarea, select {
 }
 
 .spinner-white {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-top-color: #fff;
   border-radius: 50%;

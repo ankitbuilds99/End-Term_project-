@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { 
   Compass, 
   Search, 
-  Sparkles, 
   BadgeCheck, 
   Globe, 
   Music, 
@@ -69,38 +68,47 @@ const Artists = () => {
   });
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 10px 40px' }}>
+    <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '0 0 40px' }}>
       {/* Page Header */}
       <div style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '9999px', background: 'rgba(255, 65, 108, 0.1)', border: '1px solid rgba(255, 65, 108, 0.25)', marginBottom: '14px' }}>
+        <div style={{ 
+          display: 'inline-flex', 
+          alignItems: 'center', 
+          gap: '8px', 
+          padding: '5px 12px', 
+          borderRadius: '0px', 
+          background: 'rgba(255, 65, 108, 0.08)', 
+          border: '1px solid rgba(255, 65, 108, 0.35)', 
+          marginBottom: '14px' 
+        }}>
           <Compass size={14} color="#ff6b81" />
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ff6b81', letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#ff6b81', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             Artist Discovery
           </span>
         </div>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px' }}>
+        <h1 style={{ fontSize: '2.4rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px', textTransform: 'uppercase' }}>
           Explore Creators
         </h1>
-        <p style={{ fontSize: '0.98rem', color: 'var(--text-muted)' }}>
+        <p style={{ fontSize: '0.94rem', color: 'var(--text-muted)' }}>
           Discover visionary artists, independent producers, and songwriters making waves on SunteRaho
         </p>
       </div>
 
-      {/* Search & Genre Filters */}
+      {/* Search & Genre Filters - Sharp Geometric */}
       <div style={{ marginBottom: '36px' }}>
-        {/* Search Bar */}
+        {/* Search Bar - Sharp Rectangle */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-subtle)',
-          borderRadius: '12px',
-          padding: '12px 18px',
-          marginBottom: '20px',
+          borderRadius: '0px',
+          padding: '10px 16px',
+          marginBottom: '16px',
           maxWidth: '540px'
         }}>
-          <Search size={18} color="var(--text-dim)" />
+          <Search size={16} color="var(--text-dim)" />
           <input
             type="text"
             placeholder="Search artists by name, username, or genre..."
@@ -111,30 +119,33 @@ const Artists = () => {
               border: 'none',
               outline: 'none',
               color: 'var(--text-main)',
-              fontSize: '0.95rem',
-              width: '100%'
+              fontSize: '0.90rem',
+              width: '100%',
+              borderRadius: '0px'
             }}
           />
         </div>
 
-        {/* Filter Pills */}
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
+        {/* Filter Chips - Sharp Rectangles */}
+        <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '8px' }}>
           {GENRE_FILTERS.map((genre) => (
             <button
               key={genre}
               onClick={() => setSelectedGenre(genre)}
               style={{
-                padding: '8px 16px',
-                borderRadius: '9999px',
-                fontSize: '0.85rem',
-                fontWeight: 600,
+                padding: '7px 14px',
+                borderRadius: '0px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
                 border: '1px solid',
                 borderColor: selectedGenre === genre ? 'var(--accent-primary)' : 'var(--border-subtle)',
-                backgroundColor: selectedGenre === genre ? 'var(--accent-primary)' : 'var(--bg-surface)',
-                color: selectedGenre === genre ? '#000' : 'var(--text-muted)',
+                backgroundColor: selectedGenre === genre ? 'rgba(30, 215, 96, 0.15)' : 'var(--bg-surface)',
+                color: selectedGenre === genre ? 'var(--accent-primary)' : 'var(--text-muted)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.15s ease',
               }}
             >
               {genre}
@@ -143,28 +154,28 @@ const Artists = () => {
         </div>
       </div>
 
-      {/* Grid of Artists */}
+      {/* Grid of Artists - Sharp Rectangular Cards */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-          <Loader2 size={36} className="spin" color="var(--accent-primary)" />
+          <Loader2 size={32} className="spin" color="var(--accent-primary)" />
         </div>
       ) : filteredArtists.length > 0 ? (
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '24px'
+          gap: '16px'
         }}>
           {filteredArtists.map((artist) => (
             <ArtistCard key={artist._id} artist={artist} />
           ))}
         </div>
       ) : (
-        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '16px' }}>
-          <Disc size={40} color="var(--text-dim)" style={{ marginBottom: '16px' }} />
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>
+        <div className="geometric-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '0px' }}>
+          <Disc size={36} color="var(--text-dim)" style={{ marginBottom: '14px' }} />
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '6px' }}>
             No Artists Found
           </h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
             {selectedGenre !== 'All'
               ? `No artists found in the "${selectedGenre}" category yet.`
               : 'Try searching with a different term or clear the filter.'}
@@ -227,37 +238,38 @@ const ArtistCard = ({ artist }) => {
 
   return (
     <div
-      className="glass-card"
+      className="geometric-card"
       style={{
-        padding: '24px',
-        borderRadius: '20px',
+        padding: '24px 20px',
+        borderRadius: '0px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
         position: 'relative',
-        transition: 'transform 0.2s ease, background-color 0.2s ease',
+        backgroundColor: 'var(--bg-surface)',
+        border: '1px solid var(--border-subtle)',
+        transition: 'border-color 0.15s ease, background-color 0.15s ease',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.borderColor = 'var(--border-medium)';
         e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.backgroundColor = 'var(--glass-bg)';
+        e.currentTarget.style.borderColor = 'var(--border-subtle)';
+        e.currentTarget.style.backgroundColor = 'var(--bg-surface)';
       }}
     >
-      {/* Avatar */}
+      {/* Square Avatar Container */}
       <div
         style={{
-          width: '100px',
-          height: '100px',
-          borderRadius: '50%',
+          width: '88px',
+          height: '88px',
+          borderRadius: '0px',
           overflow: 'hidden',
           marginBottom: '16px',
-          backgroundColor: 'var(--bg-deep)',
-          border: '3px solid var(--accent-primary)',
-          boxShadow: '0 8px 24px rgba(0, 242, 254, 0.2)',
+          backgroundColor: '#000',
+          border: '1px solid rgba(255, 65, 108, 0.45)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -267,16 +279,16 @@ const ArtistCard = ({ artist }) => {
           <img
             src={resolveMediaUrl(artist.avatar)}
             alt={stageName}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }}
           />
         ) : (
-          <Music size={40} color="var(--accent-primary)" />
+          <Music size={36} color="var(--accent-primary)" />
         )}
       </div>
 
       {/* Name & Verification */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>
+        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em' }}>
           {stageName}
         </h3>
         {artist.artistProfile?.isVerified && (
@@ -284,17 +296,17 @@ const ArtistCard = ({ artist }) => {
         )}
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '8px' }}>
+      <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '8px' }}>
         @{artist.username}
       </p>
 
       {/* Follower Count */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.80rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
         <Users size={14} />
         <span>{followerCount} {followerCount === 1 ? 'follower' : 'followers'}</span>
       </div>
 
-      {/* Follow Button */}
+      {/* Follow Button - Sharp Rectangular */}
       {!isSelf && (
         <button
           onClick={handleFollowToggle}
@@ -304,26 +316,28 @@ const ArtistCard = ({ artist }) => {
             alignItems: 'center',
             gap: '6px',
             padding: '8px 20px',
-            borderRadius: '9999px',
-            border: isFollowing ? '1px solid var(--border-subtle)' : 'none',
+            borderRadius: '0px',
+            border: isFollowing ? '1px solid var(--border-medium)' : '1px solid var(--accent-primary)',
             backgroundColor: isFollowing ? 'transparent' : 'var(--accent-primary)',
             color: isFollowing ? '#fff' : '#000',
-            fontWeight: 700,
-            fontSize: '0.86rem',
+            fontWeight: 800,
+            fontSize: '0.82rem',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
             cursor: 'pointer',
             marginBottom: '16px',
-            transition: 'all 0.2s ease',
+            transition: 'all 0.15s ease',
           }}
         >
           {toggling ? (
-            <Loader2 size={16} className="spin" />
+            <Loader2 size={14} className="spin" />
           ) : isFollowing ? (
             <>
-              <UserCheck size={16} /> Following
+              <UserCheck size={15} /> Following
             </>
           ) : (
             <>
-              <UserPlus size={16} /> Follow
+              <UserPlus size={15} /> Follow
             </>
           )}
         </button>
@@ -331,7 +345,7 @@ const ArtistCard = ({ artist }) => {
 
       {artist.bio && (
         <p style={{
-          fontSize: '0.84rem',
+          fontSize: '0.82rem',
           color: 'var(--text-muted)',
           lineHeight: 1.45,
           marginBottom: '16px',
@@ -344,18 +358,20 @@ const ArtistCard = ({ artist }) => {
         </p>
       )}
 
-      {/* Genre badges */}
+      {/* Genre badges - Sharp Rectangular Chips */}
       {genres.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', marginBottom: '16px' }}>
           {genres.map((g, idx) => (
             <span
               key={idx}
               style={{
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                padding: '3px 10px',
-                borderRadius: '9999px',
-                backgroundColor: 'var(--bg-surface-elevated)',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                padding: '2px 8px',
+                borderRadius: '0px',
+                backgroundColor: 'var(--bg-deep)',
                 color: 'var(--text-muted)',
                 border: '1px solid var(--border-subtle)',
               }}
@@ -369,23 +385,23 @@ const ArtistCard = ({ artist }) => {
       {/* Social media links */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: 'auto', paddingTop: '10px' }}>
         {socials.instagram && (
-          <a href={socials.instagram} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.2s' }}>
-            <InstagramIcon size={18} />
+          <a href={socials.instagram} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.15s' }}>
+            <InstagramIcon size={16} />
           </a>
         )}
         {socials.twitter && (
-          <a href={socials.twitter} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.2s' }}>
-            <TwitterIcon size={18} />
+          <a href={socials.twitter} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.15s' }}>
+            <TwitterIcon size={16} />
           </a>
         )}
         {socials.youtube && (
-          <a href={socials.youtube} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.2s' }}>
-            <YoutubeIcon size={18} />
+          <a href={socials.youtube} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.15s' }}>
+            <YoutubeIcon size={16} />
           </a>
         )}
         {socials.website && (
-          <a href={socials.website} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.2s' }}>
-            <Globe size={18} />
+          <a href={socials.website} target="_blank" rel="noreferrer" style={{ color: 'var(--text-dim)', transition: 'color 0.15s' }}>
+            <Globe size={16} />
           </a>
         )}
       </div>

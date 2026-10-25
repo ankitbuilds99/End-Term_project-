@@ -108,13 +108,13 @@ const Playlists = () => {
               </h2>
 
               {myPlaylists.length === 0 ? (
-                <div className="glass-card" style={{ padding: '40px 20px', textAlign: 'center', borderRadius: '16px' }}>
+                <div className="glass-card" style={{ padding: '40px 20px', textAlign: 'center', borderRadius: '0px' }}>
                   <FolderPlus size={40} color="var(--text-dim)" style={{ margin: '0 auto 12px' }} />
                   <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '6px' }}>No playlists yet</h3>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>
                     Create your first playlist and start gathering your favorite tracks.
                   </p>
-                  <button onClick={() => setShowCreateModal(true)} className="btn-primary">
+                  <button onClick={() => setShowCreateModal(true)} className="btn-primary" style={{ borderRadius: '0px' }}>
                     Create a Playlist
                   </button>
                 </div>
@@ -135,7 +135,7 @@ const Playlists = () => {
             </h2>
 
             {publicPlaylists.length === 0 ? (
-              <div className="glass-card" style={{ padding: '40px 20px', textAlign: 'center', borderRadius: '16px' }}>
+              <div className="glass-card" style={{ padding: '40px 20px', textAlign: 'center', borderRadius: '0px' }}>
                 <Music size={40} color="var(--text-dim)" style={{ margin: '0 auto 12px' }} />
                 <p style={{ color: 'var(--text-muted)' }}>No public playlists found.</p>
               </div>
@@ -156,7 +156,7 @@ const Playlists = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.8)',
+            backgroundColor: 'rgba(0,0,0,0.85)',
             backdropFilter: 'blur(8px)',
             zIndex: 2000,
             display: 'flex',
@@ -171,7 +171,7 @@ const Playlists = () => {
             style={{
               width: '100%',
               maxWidth: '480px',
-              borderRadius: '20px',
+              borderRadius: '0px',
               padding: '28px',
               backgroundColor: '#12141a',
               border: '1px solid var(--border-subtle)',
@@ -189,7 +189,7 @@ const Playlists = () => {
             </div>
 
             {errorMsg && (
-              <div style={{ padding: '10px 14px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#f87171', fontSize: '0.85rem', marginBottom: '16px' }}>
+              <div style={{ padding: '10px 14px', borderRadius: '0px', backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171', fontSize: '0.85rem', marginBottom: '16px' }}>
                 {errorMsg}
               </div>
             )}
@@ -208,7 +208,7 @@ const Playlists = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -228,7 +228,7 @@ const Playlists = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -249,7 +249,7 @@ const Playlists = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -258,13 +258,13 @@ const Playlists = () => {
               </div>
 
               {/* Visibility toggle */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '10px', backgroundColor: 'var(--bg-surface)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '0px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
                 <input
                   type="checkbox"
                   id="isPublicToggle"
                   checked={isPublic}
                   onChange={(e) => setIsPublic(e.target.checked)}
-                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
                 />
                 <label htmlFor="isPublicToggle" style={{ fontSize: '0.9rem', color: '#fff', cursor: 'pointer' }}>
                   {isPublic ? 'Public — visible to all users' : 'Private — only visible to you'}
@@ -277,7 +277,7 @@ const Playlists = () => {
                   onClick={() => setShowCreateModal(false)}
                   style={{
                     padding: '10px 20px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     border: '1px solid var(--border-subtle)',
                     backgroundColor: 'transparent',
                     color: 'var(--text-muted)',
@@ -290,7 +290,7 @@ const Playlists = () => {
                   type="submit"
                   disabled={creating || !newTitle.trim()}
                   className="btn-primary"
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '0px' }}
                 >
                   {creating && <Loader2 size={16} className="spin" />}
                   Create Playlist
@@ -314,19 +314,20 @@ const PlaylistCard = ({ playlist, onPlay }) => {
       onClick={() => navigate(`/playlists/${playlist._id}`)}
       style={{
         padding: '16px',
-        borderRadius: '16px',
+        borderRadius: '0px',
+        border: '1px solid var(--border-subtle)',
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s',
+        transition: 'border-color 0.15s ease, background-color 0.15s ease',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.borderColor = 'var(--border-medium)';
         e.currentTarget.style.backgroundColor = 'var(--bg-surface-elevated)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = 'var(--border-subtle)';
         e.currentTarget.style.backgroundColor = 'var(--glass-bg)';
       }}
     >
@@ -335,10 +336,11 @@ const PlaylistCard = ({ playlist, onPlay }) => {
           position: 'relative',
           width: '100%',
           paddingTop: '100%',
-          borderRadius: '12px',
+          borderRadius: '0px',
           overflow: 'hidden',
           marginBottom: '12px',
           backgroundColor: 'var(--bg-deep)',
+          border: '1px solid var(--border-subtle)',
         }}
       >
         <img
@@ -354,14 +356,17 @@ const PlaylistCard = ({ playlist, onPlay }) => {
             top: '8px',
             right: '8px',
             padding: '4px 8px',
-            borderRadius: '9999px',
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            backdropFilter: 'blur(4px)',
+            borderRadius: '0px',
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            border: '1px solid var(--border-subtle)',
             color: '#fff',
             fontSize: '0.7rem',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            fontWeight: 700,
           }}
         >
           {playlist.isPublic ? <Globe size={12} /> : <Lock size={12} />}

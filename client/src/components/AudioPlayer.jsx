@@ -91,19 +91,18 @@ const AudioPlayer = () => {
         {/* Left: Track Information */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '280px', minWidth: '180px' }}>
           <div style={{
-            width: '54px',
-            height: '54px',
-            borderRadius: '10px',
+            width: '52px',
+            height: '52px',
+            borderRadius: '0px',
             overflow: 'hidden',
             backgroundColor: 'var(--bg-surface-elevated)',
             flexShrink: 0,
             border: '1px solid var(--border-subtle)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
           }}>
             <img
               src={artwork}
               alt={currentSong.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }}
             />
           </div>
 
@@ -144,10 +143,10 @@ const AudioPlayer = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: '50%',
-              transition: 'transform 0.2s, color 0.2s',
+              borderRadius: '0px',
+              transition: 'transform 0.15s, color 0.15s',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.2)')}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.15)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
             <Heart size={19} fill={isSongLiked(currentSong._id) ? '#ff3366' : 'none'} />
@@ -276,7 +275,7 @@ const AudioPlayer = () => {
                 style={{
                   width: '100%',
                   height: '4px',
-                  borderRadius: '2px',
+                  borderRadius: '0px',
                   background: `linear-gradient(to right, var(--accent-primary) ${progressPercent}%, rgba(255, 255, 255, 0.15) ${progressPercent}%)`,
                   appearance: 'none',
                   outline: 'none',
@@ -315,6 +314,7 @@ const AudioPlayer = () => {
               position: 'relative',
               color: isQueueOpen ? 'var(--accent-primary)' : 'var(--text-muted)',
               padding: '6px',
+              borderRadius: '0px',
               display: 'flex',
               alignItems: 'center',
             }}
@@ -329,8 +329,8 @@ const AudioPlayer = () => {
                 fontWeight: 800,
                 backgroundColor: 'var(--accent-primary)',
                 color: '#000',
-                borderRadius: '9999px',
-                padding: '1px 5px',
+                borderRadius: '0px',
+                padding: '1px 4px',
               }}>
                 {queue.length}
               </span>
@@ -342,7 +342,7 @@ const AudioPlayer = () => {
             <button
               onClick={toggleMute}
               title={isMuted ? 'Unmute' : 'Mute'}
-              style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+              style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', borderRadius: '0px' }}
             >
               {isMuted || volume === 0 ? (
                 <VolumeX size={18} />
@@ -363,7 +363,7 @@ const AudioPlayer = () => {
               style={{
                 width: '85px',
                 height: '4px',
-                borderRadius: '2px',
+                borderRadius: '0px',
                 background: `linear-gradient(to right, #fff ${(isMuted ? 0 : volume) * 100}%, rgba(255, 255, 255, 0.2) ${(isMuted ? 0 : volume) * 100}%)`,
                 appearance: 'none',
                 outline: 'none',
@@ -374,7 +374,7 @@ const AudioPlayer = () => {
         </div>
       </footer>
 
-      {/* Slide-out Queue Modal / Drawer */}
+      {/* Slide-out Queue Modal / Drawer - Sharp Geometric */}
       {isQueueOpen && (
         <div style={{
           position: 'fixed',
@@ -384,8 +384,7 @@ const AudioPlayer = () => {
           maxHeight: '480px',
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-medium)',
-          borderRadius: '16px',
-          boxShadow: 'var(--shadow-elevated)',
+          borderRadius: '0px',
           zIndex: 1100,
           display: 'flex',
           flexDirection: 'column',
@@ -396,12 +395,12 @@ const AudioPlayer = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '16px 20px',
+            padding: '14px 18px',
             borderBottom: '1px solid var(--border-subtle)',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ListMusic size={18} color="var(--accent-primary)" />
-              <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Play Queue ({queue.length})</h3>
+              <h3 style={{ fontSize: '0.94rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Play Queue ({queue.length})</h3>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -409,13 +408,13 @@ const AudioPlayer = () => {
                 <button
                   onClick={clearQueue}
                   title="Clear Queue"
-                  style={{ color: 'var(--text-dim)', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  style={{ color: 'var(--text-dim)', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '4px', borderRadius: '0px' }}
                 >
                   <Trash2 size={14} />
                   <span>Clear</span>
                 </button>
               )}
-              <button onClick={toggleQueueModal} style={{ color: 'var(--text-dim)' }}>
+              <button onClick={toggleQueueModal} style={{ color: 'var(--text-dim)', borderRadius: '0px' }}>
                 <X size={18} />
               </button>
             </div>
@@ -439,12 +438,12 @@ const AudioPlayer = () => {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '8px 10px',
-                      borderRadius: '8px',
+                      borderRadius: '0px',
                       cursor: 'pointer',
                       backgroundColor: isItemPlaying ? 'rgba(30, 215, 96, 0.1)' : 'transparent',
-                      border: isItemPlaying ? '1px solid rgba(30, 215, 96, 0.25)' : '1px solid transparent',
+                      border: isItemPlaying ? '1px solid rgba(30, 215, 96, 0.35)' : '1px solid transparent',
                       marginBottom: '4px',
-                      transition: 'background 0.2s',
+                      transition: 'background 0.15s',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
@@ -454,7 +453,7 @@ const AudioPlayer = () => {
                       <img
                         src={resolveMediaUrl(song.artworkUrl)}
                         alt={song.title}
-                        style={{ width: '36px', height: '36px', borderRadius: '6px', objectFit: 'cover' }}
+                        style={{ width: '36px', height: '36px', borderRadius: '0px', objectFit: 'cover' }}
                       />
                       <div style={{ minWidth: 0, overflow: 'hidden' }}>
                         <p style={{

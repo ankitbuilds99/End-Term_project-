@@ -174,7 +174,7 @@ const PlaylistDetails = () => {
 
   if (errorMsg || !playlist) {
     return (
-      <div className="glass-card" style={{ maxWidth: '500px', margin: '80px auto', padding: '40px 24px', textAlign: 'center', borderRadius: '20px' }}>
+      <div className="glass-card" style={{ maxWidth: '500px', margin: '80px auto', padding: '40px 24px', textAlign: 'center', borderRadius: '0px' }}>
         <Lock size={48} color="#f87171" style={{ margin: '0 auto 16px' }} />
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px' }}>Playlist Inaccessible</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
@@ -196,16 +196,15 @@ const PlaylistDetails = () => {
       {/* Hero Banner */}
       <div
         style={{
-          borderRadius: '24px',
+          borderRadius: '0px',
           padding: '36px',
           marginBottom: '32px',
-          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(168, 85, 247, 0.2) 60%, rgba(10, 11, 14, 0.9) 100%)',
+          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(168, 85, 247, 0.15) 60%, rgba(10, 11, 14, 0.95) 100%)',
           border: '1px solid var(--border-subtle)',
           display: 'flex',
           alignItems: 'center',
           gap: '32px',
           flexWrap: 'wrap',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
         }}
       >
         <img
@@ -214,10 +213,10 @@ const PlaylistDetails = () => {
           style={{
             width: '180px',
             height: '180px',
-            borderRadius: '20px',
+            borderRadius: '0px',
             objectFit: 'cover',
             backgroundColor: 'var(--bg-deep)',
-            boxShadow: '0 12px 30px rgba(0, 0, 0, 0.5)',
+            border: '1px solid var(--border-subtle)',
             flexShrink: 0,
           }}
         />
@@ -233,10 +232,13 @@ const PlaylistDetails = () => {
                 alignItems: 'center',
                 gap: '4px',
                 padding: '2px 8px',
-                borderRadius: '9999px',
+                borderRadius: '0px',
+                border: '1px solid var(--border-subtle)',
                 backgroundColor: 'rgba(255,255,255,0.08)',
                 color: 'var(--text-dim)',
                 fontSize: '0.72rem',
+                textTransform: 'uppercase',
+                fontWeight: 700,
               }}
             >
               {playlist.isPublic ? <Globe size={11} /> : <Lock size={11} />}
@@ -276,7 +278,7 @@ const PlaylistDetails = () => {
             gap: '8px',
             padding: '12px 28px',
             fontSize: '1rem',
-            borderRadius: '9999px',
+            borderRadius: '0px',
           }}
         >
           <Play size={20} fill="#000" />
@@ -291,7 +293,7 @@ const PlaylistDetails = () => {
             alignItems: 'center',
             gap: '8px',
             padding: '12px 22px',
-            borderRadius: '9999px',
+            borderRadius: '0px',
             backgroundColor: 'var(--bg-surface-elevated)',
             border: '1px solid var(--border-subtle)',
             color: '#fff',
@@ -312,7 +314,7 @@ const PlaylistDetails = () => {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '12px 20px',
-                borderRadius: '9999px',
+                borderRadius: '0px',
                 backgroundColor: 'transparent',
                 border: '1px solid var(--border-subtle)',
                 color: 'var(--text-muted)',
@@ -330,9 +332,9 @@ const PlaylistDetails = () => {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '12px 20px',
-                borderRadius: '9999px',
+                borderRadius: '0px',
                 backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
                 color: '#f87171',
                 cursor: 'pointer',
               }}
@@ -346,18 +348,18 @@ const PlaylistDetails = () => {
 
       {/* Tracks Table */}
       {songs.length === 0 ? (
-        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '20px' }}>
+        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '0px' }}>
           <Music size={48} color="var(--text-dim)" style={{ margin: '0 auto 16px' }} />
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>This playlist is empty</h3>
           <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
             Browse tracks from the catalogue and click the folder icon to add them.
           </p>
-          <Link to="/catalogue" className="btn-primary">
+          <Link to="/catalogue" className="btn-primary" style={{ borderRadius: '0px' }}>
             Explore Catalogue
           </Link>
         </div>
       ) : (
-        <div className="glass-card" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+        <div className="glass-card" style={{ borderRadius: '0px', overflow: 'hidden' }}>
           {/* Table Header */}
           <div
             style={{
@@ -425,8 +427,9 @@ const PlaylistDetails = () => {
                     style={{
                       width: '42px',
                       height: '42px',
-                      borderRadius: '8px',
+                      borderRadius: '0px',
                       objectFit: 'cover',
+                      border: '1px solid var(--border-subtle)',
                       backgroundColor: 'var(--bg-deep)',
                     }}
                   />
@@ -533,7 +536,7 @@ const PlaylistDetails = () => {
             style={{
               width: '100%',
               maxWidth: '480px',
-              borderRadius: '20px',
+              borderRadius: '0px',
               padding: '28px',
               backgroundColor: '#12141a',
               border: '1px solid var(--border-subtle)',
@@ -563,7 +566,7 @@ const PlaylistDetails = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -582,7 +585,7 @@ const PlaylistDetails = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -602,7 +605,7 @@ const PlaylistDetails = () => {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     backgroundColor: 'var(--bg-deep)',
                     border: '1px solid var(--border-subtle)',
                     color: '#fff',
@@ -611,13 +614,13 @@ const PlaylistDetails = () => {
               </div>
 
               {/* Visibility toggle */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '10px', backgroundColor: 'var(--bg-surface)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '0px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
                 <input
                   type="checkbox"
                   id="editPublicToggle"
                   checked={editPublic}
                   onChange={(e) => setEditPublic(e.target.checked)}
-                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
                 />
                 <label htmlFor="editPublicToggle" style={{ fontSize: '0.9rem', color: '#fff', cursor: 'pointer' }}>
                   {editPublic ? 'Public — visible to all users' : 'Private — only visible to you'}
@@ -630,7 +633,7 @@ const PlaylistDetails = () => {
                   onClick={() => setShowEditModal(false)}
                   style={{
                     padding: '10px 20px',
-                    borderRadius: '10px',
+                    borderRadius: '0px',
                     border: '1px solid var(--border-subtle)',
                     backgroundColor: 'transparent',
                     color: 'var(--text-muted)',
@@ -643,7 +646,7 @@ const PlaylistDetails = () => {
                   type="submit"
                   disabled={savingEdit || !editTitle.trim()}
                   className="btn-primary"
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '0px' }}
                 >
                   {savingEdit && <Loader2 size={16} className="spin" />}
                   Save Changes
@@ -675,10 +678,10 @@ const PlaylistDetails = () => {
             style={{
               width: '100%',
               maxWidth: '420px',
-              borderRadius: '20px',
+              borderRadius: '0px',
               padding: '28px',
               backgroundColor: '#12141a',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
               textAlign: 'center',
             }}
             onClick={(e) => e.stopPropagation()}
@@ -696,7 +699,7 @@ const PlaylistDetails = () => {
                 onClick={() => setShowDeleteConfirm(false)}
                 style={{
                   padding: '10px 20px',
-                  borderRadius: '10px',
+                  borderRadius: '0px',
                   border: '1px solid var(--border-subtle)',
                   backgroundColor: 'transparent',
                   color: 'var(--text-muted)',
@@ -710,7 +713,7 @@ const PlaylistDetails = () => {
                 disabled={deleting}
                 style={{
                   padding: '10px 24px',
-                  borderRadius: '10px',
+                  borderRadius: '0px',
                   border: 'none',
                   backgroundColor: '#ef4444',
                   color: '#fff',

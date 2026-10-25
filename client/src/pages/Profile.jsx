@@ -133,9 +133,9 @@ const Profile = () => {
             <div style={{
               width: '110px',
               height: '110px',
-              borderRadius: '50%',
+              borderRadius: '0px',
               backgroundColor: 'var(--bg-surface-elevated)',
-              border: `3px solid ${isArtist ? '#ff6b81' : 'var(--accent-primary)'}`,
+              border: `2px solid ${isArtist ? '#ff6b81' : 'var(--accent-primary)'}`,
               overflow: 'hidden',
               display: 'flex',
               alignItems: 'center',
@@ -143,10 +143,9 @@ const Profile = () => {
               fontWeight: 800,
               fontSize: '2.5rem',
               color: isArtist ? '#ff6b81' : 'var(--accent-primary)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
             }}>
               {avatar ? (
-                <img src={avatar} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={avatar} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
               ) : (
                 name.charAt(0).toUpperCase()
               )}
@@ -292,9 +291,9 @@ const Profile = () => {
                       onClick={() => toggleGenre(genre)}
                       style={{
                         fontSize: '0.78rem',
-                        fontWeight: 600,
+                        fontWeight: 700,
                         padding: '6px 12px',
-                        borderRadius: '9999px',
+                        borderRadius: '0px',
                         border: isSelected ? '1px solid #ff6b81' : '1px solid var(--border-subtle)',
                         backgroundColor: isSelected ? 'rgba(255, 65, 108, 0.2)' : 'var(--bg-deep)',
                         color: isSelected ? '#fff' : 'var(--text-muted)',

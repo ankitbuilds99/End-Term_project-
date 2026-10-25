@@ -80,5 +80,7 @@ export const clearListeningHistoryApi = () => api.delete('/users/me/history');
 
 // System Health
 export const getHealthApi = () => api.get('/health');
+export const checkHealth = getHealthApi;
+export const getArtistsApi = listArtistsApi;
 
 export default api;

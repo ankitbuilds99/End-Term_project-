@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ChevronLeft, ChevronRight, Search, ShieldCheck, UserCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -11,8 +11,8 @@ const Navbar = () => {
   return (
     <header style={{
       height: 'var(--navbar-height)',
-      backgroundColor: 'rgba(11, 12, 16, 0.75)',
-      backdropFilter: 'var(--blur-standard)',
+      backgroundColor: 'rgba(8, 9, 11, 0.85)',
+      backdropFilter: 'blur(12px)',
       borderBottom: '1px solid var(--border-subtle)',
       position: 'sticky',
       top: 0,
@@ -22,46 +22,48 @@ const Navbar = () => {
       justifyContent: 'space-between',
       padding: '0 32px',
     }}>
-      {/* Navigation history controls & Search */}
+      {/* Navigation history controls & Search - Sharp Rectangular Form */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '6px' }}>
           <button
             onClick={() => navigate(-1)}
             style={{
               width: '32px',
               height: '32px',
-              borderRadius: '50%',
+              borderRadius: '0px',
               backgroundColor: 'var(--bg-surface-elevated)',
+              border: '1px solid var(--border-subtle)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--text-main)',
-              transition: 'background 0.2s',
+              transition: 'border-color 0.15s, background 0.15s',
             }}
             title="Go back"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
           <button
             onClick={() => navigate(1)}
             style={{
               width: '32px',
               height: '32px',
-              borderRadius: '50%',
+              borderRadius: '0px',
               backgroundColor: 'var(--bg-surface-elevated)',
+              border: '1px solid var(--border-subtle)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--text-main)',
-              transition: 'background 0.2s',
+              transition: 'border-color 0.15s, background 0.15s',
             }}
             title="Go forward"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </button>
         </div>
 
-        {/* Global Search Bar */}
+        {/* Global Search Bar - Sharp Rectangular */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -72,10 +74,10 @@ const Navbar = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            backgroundColor: 'var(--bg-surface)',
+            backgroundColor: 'var(--bg-deep)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: '9999px',
-            padding: '8px 16px',
+            borderRadius: '0px',
+            padding: '8px 14px',
             width: '320px',
           }}
         >
@@ -91,6 +93,7 @@ const Navbar = () => {
               color: 'var(--text-main)',
               fontSize: '0.85rem',
               width: '100%',
+              borderRadius: '0px',
             }}
             onFocus={(e) => {
               if (location.pathname !== '/catalogue') {
@@ -101,7 +104,7 @@ const Navbar = () => {
         </form>
       </div>
 
-      {/* Auth Actions / User Pill */}
+      {/* Auth Actions / User Badge - Sharp Rectangular */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         {user ? (
           <Link
@@ -110,51 +113,52 @@ const Navbar = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              padding: '4px 14px 4px 6px',
-              borderRadius: '9999px',
-              backgroundColor: 'var(--bg-surface-elevated)',
+              padding: '4px 12px 4px 6px',
+              borderRadius: '0px',
+              backgroundColor: 'var(--bg-surface)',
               border: '1px solid var(--border-subtle)',
-              transition: 'border-color 0.2s, background 0.2s',
+              transition: 'border-color 0.15s, background 0.15s',
             }}
           >
             <div style={{
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
+              width: '28px',
+              height: '28px',
+              borderRadius: '0px',
               backgroundColor: 'var(--accent-primary)',
               color: '#000',
               fontWeight: 800,
-              fontSize: '0.8rem',
+              fontSize: '0.78rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               overflow: 'hidden',
             }}>
               {user.avatar ? (
-                <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0px' }} />
               ) : (
                 user.name.charAt(0).toUpperCase()
               )}
             </div>
-            <span style={{ fontSize: '0.86rem', fontWeight: 600, color: '#fff' }}>
+            <span style={{ fontSize: '0.84rem', fontWeight: 600, color: '#fff' }}>
               {user.name.split(' ')[0]}
             </span>
-            <span className={`badge-role ${user.role}`} style={{ fontSize: '0.6rem', padding: '2px 6px' }}>
+            <span className={`badge-role ${user.role}`} style={{ fontSize: '0.58rem', padding: '1px 5px', borderRadius: '0px' }}>
               {user.role}
             </span>
           </Link>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Link to="/register" style={{
               color: 'var(--text-muted)',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               fontWeight: 700,
               padding: '8px 16px',
-              transition: 'color 0.2s',
+              borderRadius: '0px',
+              transition: 'color 0.15s',
             }}>
               Sign Up
             </Link>
-            <Link to="/login" className="btn-primary" style={{ padding: '8px 24px', fontSize: '0.9rem' }}>
+            <Link to="/login" className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.88rem', borderRadius: '0px' }}>
               Log In
             </Link>
           </div>

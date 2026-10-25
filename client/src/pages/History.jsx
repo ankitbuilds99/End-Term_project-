@@ -92,9 +92,9 @@ const History = () => {
             style={{
               width: '54px',
               height: '54px',
-              borderRadius: '16px',
+              borderRadius: '0px',
               background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
-              border: '1px solid rgba(6, 182, 212, 0.3)',
+              border: '1px solid rgba(6, 182, 212, 0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -118,8 +118,8 @@ const History = () => {
               alignItems: 'center',
               gap: '6px',
               padding: '8px 16px',
-              borderRadius: '10px',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
+              borderRadius: '0px',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
               backgroundColor: 'rgba(239, 68, 68, 0.1)',
               color: '#f87171',
               cursor: 'pointer',
@@ -138,18 +138,18 @@ const History = () => {
           <Loader2 size={36} className="spin" color="var(--accent-primary)" />
         </div>
       ) : historyItems.length === 0 ? (
-        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '20px' }}>
+        <div className="glass-card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '0px' }}>
           <Music size={48} color="var(--text-dim)" style={{ margin: '0 auto 16px' }} />
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>No history yet</h3>
           <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
             Songs you stream will automatically appear here in chronological order.
           </p>
-          <Link to="/catalogue" className="btn-primary">
+          <Link to="/catalogue" className="btn-primary" style={{ borderRadius: '0px' }}>
             Start Listening
           </Link>
         </div>
       ) : (
-        <div className="glass-card" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+        <div className="glass-card" style={{ borderRadius: '0px', overflow: 'hidden' }}>
           {historyItems.map((item, idx) => {
             const song = item.song;
             if (!song) return null;
@@ -196,8 +196,9 @@ const History = () => {
                     style={{
                       width: '42px',
                       height: '42px',
-                      borderRadius: '8px',
+                      borderRadius: '0px',
                       objectFit: 'cover',
+                      border: '1px solid var(--border-subtle)',
                       backgroundColor: 'var(--bg-deep)',
                     }}
                   />
@@ -223,13 +224,13 @@ const History = () => {
                   {song.genre}
                 </div>
 
-                {/* Timestamp */}
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
+                {/* Time Ago */}
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
                   {formatTimeAgo(item.playedAt)}
                 </div>
 
                 {/* Duration */}
-                <div style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                <div style={{ textAlign: 'right', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
                   {formatTime(song.duration)}
                 </div>
               </div>
@@ -259,10 +260,10 @@ const History = () => {
             style={{
               width: '100%',
               maxWidth: '420px',
-              borderRadius: '20px',
+              borderRadius: '0px',
               padding: '28px',
               backgroundColor: '#12141a',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
               textAlign: 'center',
             }}
             onClick={(e) => e.stopPropagation()}
@@ -280,7 +281,7 @@ const History = () => {
                 onClick={() => setShowClearConfirm(false)}
                 style={{
                   padding: '10px 20px',
-                  borderRadius: '10px',
+                  borderRadius: '0px',
                   border: '1px solid var(--border-subtle)',
                   backgroundColor: 'transparent',
                   color: 'var(--text-muted)',
@@ -294,7 +295,7 @@ const History = () => {
                 disabled={clearing}
                 style={{
                   padding: '10px 24px',
-                  borderRadius: '10px',
+                  borderRadius: '0px',
                   border: 'none',
                   backgroundColor: '#ef4444',
                   color: '#fff',

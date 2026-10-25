@@ -96,11 +96,10 @@ const AddToPlaylistModal = ({ song, onClose }) => {
         style={{
           width: '100%',
           maxWidth: '460px',
-          borderRadius: '20px',
+          borderRadius: '0px',
           padding: '24px',
           backgroundColor: '#12141a',
           border: '1px solid var(--border-subtle)',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -130,7 +129,7 @@ const AddToPlaylistModal = ({ song, onClose }) => {
           <div
             style={{
               padding: '10px 14px',
-              borderRadius: '8px',
+              borderRadius: '0px',
               backgroundColor: 'rgba(239, 68, 68, 0.15)',
               border: '1px solid rgba(239, 68, 68, 0.3)',
               color: '#f87171',
@@ -147,7 +146,7 @@ const AddToPlaylistModal = ({ song, onClose }) => {
             <p style={{ color: 'var(--text-muted)', marginBottom: '16px' }}>
               You need to be logged in to create and manage playlists.
             </p>
-            <Link to="/login" className="btn-primary" onClick={onClose}>
+            <Link to="/login" className="btn-primary" onClick={onClose} style={{ borderRadius: '0px' }}>
               Log In
             </Link>
           </div>
@@ -167,7 +166,7 @@ const AddToPlaylistModal = ({ song, onClose }) => {
                 style={{
                   flex: 1,
                   padding: '10px 14px',
-                  borderRadius: '10px',
+                  borderRadius: '0px',
                   backgroundColor: 'var(--bg-deep)',
                   border: '1px solid var(--border-subtle)',
                   color: '#fff',
@@ -184,6 +183,7 @@ const AddToPlaylistModal = ({ song, onClose }) => {
                   gap: '6px',
                   padding: '10px 16px',
                   fontSize: '0.88rem',
+                  borderRadius: '0px',
                 }}
               >
                 {creating ? <Loader2 size={16} className="spin" /> : <FolderPlus size={16} />}
@@ -212,7 +212,7 @@ const AddToPlaylistModal = ({ song, onClose }) => {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '10px 14px',
-                        borderRadius: '10px',
+                        borderRadius: '0px',
                         backgroundColor: 'var(--bg-surface)',
                         border: '1px solid var(--border-subtle)',
                       }}
@@ -234,8 +234,8 @@ const AddToPlaylistModal = ({ song, onClose }) => {
                           alignItems: 'center',
                           gap: '6px',
                           padding: '6px 14px',
-                          borderRadius: '8px',
-                          border: 'none',
+                          borderRadius: '0px',
+                          border: isAdded ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid var(--border-subtle)',
                           cursor: isAdded ? 'default' : 'pointer',
                           backgroundColor: isAdded
                             ? 'rgba(34, 197, 94, 0.15)'
