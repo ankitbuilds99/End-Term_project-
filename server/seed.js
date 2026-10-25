@@ -39,20 +39,20 @@ const seedDemoData = async () => {
         },
       },
       {
-        name: 'Prateek Kuhad',
-        username: 'prateekkuhad',
-        email: 'prateek@sunteraho.com',
+        name: 'Mohit Chauhan',
+        username: 'mohitchauhan',
+        email: 'mohit@sunteraho.com',
         password: 'password123',
         role: 'artist',
         avatar: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=500&q=80',
-        bio: 'Singer-songwriter strumming quiet tunes, indie acoustic ballads, and nostalgic stories.',
+        bio: 'Iconic Indian singer-songwriter celebrated for soulful melodies and Silk Route rock acoustic vibes.',
         artistProfile: {
-          stageName: 'Prateek Kuhad',
-          genres: ['Indie Pop', 'Folk & Acoustic'],
+          stageName: 'Mohit Chauhan',
+          genres: ['Indie Pop', 'Folk & Acoustic', 'Bollywood'],
           isVerified: true,
           socialLinks: {
-            instagram: 'https://instagram.com/prateekkuhad',
-            youtube: 'https://youtube.com/@prateekkuhad',
+            instagram: 'https://instagram.com/mohitchauhan',
+            youtube: 'https://youtube.com/@mohitchauhan',
           },
         },
       },
@@ -75,13 +75,30 @@ const seedDemoData = async () => {
         },
       },
       {
+        name: 'KK (Krishnakumar Kunnath)',
+        username: 'kk_music',
+        email: 'kk@sunteraho.com',
+        password: 'password123',
+        role: 'artist',
+        avatar: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=500&q=80',
+        bio: 'Legendary Indian playback singer known for timeless romantic anthems and unforgettable melodies.',
+        artistProfile: {
+          stageName: 'KK',
+          genres: ['Bollywood', 'Rock', 'Sufi'],
+          isVerified: true,
+          socialLinks: {
+            instagram: 'https://instagram.com/kk_singer',
+          },
+        },
+      },
+      {
         name: 'Demo Listener',
         username: 'listener',
         email: 'listener@sunteraho.com',
         password: 'password123',
         role: 'listener',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80',
-        bio: 'Music addict, playlist explorer, and late-night Lo-Fi listener.',
+        bio: 'Music addict, playlist explorer, and late-night listener.',
       },
     ];
 
@@ -101,102 +118,101 @@ const seedDemoData = async () => {
       userMap[userData.username] = user;
     }
 
-    // Seed Authorized Audio Tracks
-    const demoSongs = [
-      {
-        title: 'Shayad (Soulful Acoustic Reprise)',
-        artist: userMap['arijitsingh']._id,
-        genre: 'Bollywood',
-        album: 'Acoustic Memories',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
-        duration: 372,
-        playsCount: 1420,
-        isPublished: true,
+    // Clear previous generic mock tracks and seed real songs with real vocal tracks
+    await Song.deleteMany({
+      title: {
+        $in: [
+          'Tum Hi Ho (Original)',
+          'Chammak Challo',
+          'Abhi Kuch Dino Se',
+          'Abhi Abhi (Soul Ballad)',
+          'Tu Mohabbat Hai (Club Mix)',
+          'Shayad (Soulful Acoustic Reprise)',
+          'Tum Hi Ho (Midnight Piano Session)',
+          'Cold / Mess (Heartbreak Sunset)',
+          'Kasoor (Gentle Breeze)',
+          'Udd Gaye (Future Bass Drop)',
+          'Liggi (Festive Synth Beats)',
+          'Unreleased Studio Demo (Draft)',
+        ],
       },
+    });
+
+    const realSongs = [
       {
-        title: 'Tum Hi Ho (Midnight Piano Session)',
+        title: 'Tum Hi Ho',
         artist: userMap['arijitsingh']._id,
         genre: 'Bollywood',
-        album: 'Aashiqui Sessions',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        album: 'Aashiqui 2',
+        audioUrl: '/uploads/audio/tum_hi_ho.mp3',
         artworkUrl: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=600&q=80',
-        duration: 423,
-        playsCount: 2840,
+        duration: 264,
+        playsCount: 28450,
         isPublished: true,
       },
       {
-        title: 'Cold / Mess (Heartbreak Sunset)',
-        artist: userMap['prateekkuhad']._id,
-        genre: 'Indie Pop',
-        album: 'Cold / Mess EP',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
-        duration: 345,
-        playsCount: 3120,
-        isPublished: true,
-      },
-      {
-        title: 'Kasoor (Gentle Breeze)',
-        artist: userMap['prateekkuhad']._id,
-        genre: 'Folk & Acoustic',
-        album: 'Kasoor Single',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80',
-        duration: 302,
-        playsCount: 1890,
-        isPublished: true,
-      },
-      {
-        title: 'Udd Gaye (Future Bass Drop)',
+        title: 'Chammak Challo',
         artist: userMap['ritviz']._id,
         genre: 'Electronic / EDM',
-        album: 'Bacardi Sessions',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+        album: 'Ra.One Soundtrack',
+        audioUrl: '/uploads/audio/chammak_challo.mp3',
         artworkUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80',
-        duration: 391,
-        playsCount: 4560,
+        duration: 226,
+        playsCount: 34120,
         isPublished: true,
       },
       {
-        title: 'Liggi (Festive Synth Beats)',
+        title: 'Abhi Kuch Dino Se',
+        artist: userMap['mohitchauhan']._id,
+        genre: 'Indie Pop',
+        album: 'Dil Toh Baccha Hai Ji',
+        audioUrl: '/uploads/audio/abhi_kuch_dino_se.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+        duration: 285,
+        playsCount: 19800,
+        isPublished: true,
+      },
+      {
+        title: 'Abhi Abhi',
+        artist: userMap['kk_music']._id,
+        genre: 'Bollywood',
+        album: 'Jism 2',
+        audioUrl: '/uploads/audio/abhi_abhi.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80',
+        duration: 345,
+        playsCount: 22100,
+        isPublished: true,
+      },
+      {
+        title: 'Tu Mohabbat Hai (Club Mix)',
         artist: userMap['ritviz']._id,
         genre: 'Electronic / EDM',
-        album: 'Yuv EP',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80',
-        duration: 334,
-        playsCount: 2210,
+        album: 'Club Hits Edition',
+        audioUrl: '/uploads/audio/tu_mohabbat_hai.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+        duration: 393,
+        playsCount: 15400,
         isPublished: true,
       },
       {
-        title: 'Unreleased Studio Demo (Draft)',
+        title: 'Arijit Singh Unreleased Demo (Private)',
         artist: userMap['arijitsingh']._id,
-        genre: 'Acoustic',
-        album: 'Private Demos',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
-        artworkUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
-        duration: 180,
+        genre: 'Bollywood',
+        album: 'Studio Drafts',
+        audioUrl: '/uploads/audio/tum_hi_ho.mp3',
+        artworkUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+        duration: 264,
         playsCount: 0,
-        isPublished: false, // Unpublished track for testing publication visibility
+        isPublished: false, // Private draft to test draft visibility
       },
     ];
 
-    for (const songData of demoSongs) {
-      const exists = await Song.findOne({
-        title: songData.title,
-        artist: songData.artist,
-      });
-
-      if (!exists) {
-        await Song.create(songData);
-        console.log(`[Seed] Created song: "${songData.title}" (${songData.genre})`);
-      } else {
-        console.log(`[Seed] Song "${songData.title}" already exists.`);
-      }
+    for (const songData of realSongs) {
+      await Song.create(songData);
+      console.log(`[Seed] Created Real Track: "${songData.title}" (${songData.genre})`);
     }
 
-    console.log('[Seed] Seeding completed successfully!');
+    console.log('[Seed] Seeding completed with REAL tracks successfully!');
     await mongoose.disconnect();
     process.exit(0);
   } catch (err) {
