@@ -12,7 +12,7 @@
 
 ### 🌐 Live Deployment
 - **Live Application URL**: [**https://sunte-raho-nine.vercel.app**](https://sunte-raho-nine.vercel.app)
-- **GitHub Repository**: [**https://github.com/Abhi1818Singh/SunteRaho**](https://github.com/Abhi1818Singh/SunteRaho)
+- **GitHub Repository**: [**https://github.com/ankitbuilds99/End-Term_project-**](https://github.com/ankitbuilds99/End-Term_project-)
 
 > [!NOTE]
 > The backend server is hosted on Render's free tier. Render spins down inactive web services after 15 minutes of inactivity. When visiting the live application for the first time, the server may take approximately 50 seconds to complete a cold start and respond to requests. Once initialized, the application responds normally.
@@ -184,8 +184,8 @@ VITE_API_URL=http://localhost:8008/api
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/Abhi1818Singh/SunteRaho.git
-cd SunteRaho
+git clone https://github.com/ankitbuilds99/End-Term_project-.git
+cd End-Term_project-
 ```
 
 ### 2. Backend Setup
