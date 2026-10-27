@@ -1,6 +1,6 @@
 # SunteRaho — Full-Stack Music Streaming Platform
 
-[![Live App](https://img.shields.io/badge/Live%20Demo-sunte--raho--nine.vercel.app-1ed760?style=for-the-badge&logo=vercel)](https://sunte-raho-nine.vercel.app)
+[![Live App](https://img.shields.io/badge/Live%20Demo-sunteraho.vercel.app-1ed760?style=for-the-badge&logo=vercel)](https://sunteraho.vercel.app)
 [![Node.js](https://img.shields.io/badge/Node.js-v20%2B-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47a248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
@@ -11,7 +11,7 @@
 ---
 
 ### 🌐 Live Deployment
-- **Live Application URL**: [**https://sunte-raho-nine.vercel.app**](https://sunte-raho-nine.vercel.app)
+- **Live Application URL**: [**https://sunteraho.vercel.app**](https://sunteraho.vercel.app)
 - **GitHub Repository**: [**https://github.com/ankitbuilds99/End-Term_project-**](https://github.com/ankitbuilds99/End-Term_project-)
 
 > [!NOTE]
